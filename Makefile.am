@@ -1,4 +1,4 @@
-SUBDIRS = intl po src pixmaps
+SUBDIRS = po src pixmaps
 
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)

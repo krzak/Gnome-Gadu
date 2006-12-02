@@ -14,7 +14,7 @@ AC_SUBST(VERSION)
 # AM_PROG_LIBTOOL
 AM_MAINTAINER_MODE
 
-dnl GTK_MIN_VER="2.8.18"
+AC_DEFINE([GNOMEGADU_DEBUG], [], [Description])
 
 if test `uname -s` = "Linux"; then
  	AC_DEFINE_UNQUOTED(OS_NAME,"`uname -o`")
@@ -111,22 +111,10 @@ if test "x$with_c99_vsnprintf" = "x"; then
 fi
 
 
-# AC_CHECK_HEADERS(asm/byteorder.h byteswap.h endian.h machine/endian.h arpa/nameser_compat.h)
-# AC_CHECK_FUNCS(bswap_32 bswap_16)
-
-AC_TYPE_SIGNAL
-AC_FUNC_STRFTIME
-AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([memset mkdir strcasecmp strchr strlen])
-
-
-
 AC_CHECK_HEADERS(libintl.h)
-ALL_LINGUAS="pl"
-dnl GETTEXT_PACKAGE=$PACKAGE
-dnl AC_SUBST(GETTEXT_PACKAGE)
-dnl AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
+IT_PROG_INTLTOOL([0.35.0])
 
+ALL_LINGUAS="pl"
 dnl -----------------------------------------------------------
 dnl Language Support
 dnl -----------------------------------------------------------
@@ -134,10 +122,8 @@ GETTEXT_PACKAGE=GnomeGadu
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Gettext package name])
 
-IT_PROG_INTLTOOL
+AM_GLIB_GNU_GETTEXT
 
-AM_GNU_GETTEXT([use-libtool])
-dnl AM_GLIB_GNU_GETTEXT
 
 if test "x$GCC" = "xyes"; then
    CFLAGS="$CFLAGS -Wall -Wno-uninitialized -Wchar-subscripts -Wnested-externs -Wpointer-arith -Wno-sign-compare -rdynamic"
@@ -268,7 +254,6 @@ AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 
 AC_OUTPUT([ 
-intl/Makefile 
 po/Makefile.in
 Makefile
 src/Makefile
