@@ -1,0 +1,283 @@
+m4_define([GnomeGadu_Version],[0.0.1])
+
+AC_PREREQ(2.59)
+AC_INIT(GnomeGadu, 0.0.1, http://www.hakore.com)
+AC_COPYRIGHT([Marcin Krzyżanowski - HAKORE 2006])
+AM_INIT_AUTOMAKE([GnomeGadu],[GnomeGadu_Version])
+AM_CONFIG_HEADER(config.h)
+
+AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
+AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
+AC_SUBST(PACKAGE)
+AC_SUBST(VERSION)
+
+# AM_PROG_LIBTOOL
+AM_MAINTAINER_MODE
+
+dnl GTK_MIN_VER="2.8.18"
+
+if test `uname -s` = "Linux"; then
+ 	AC_DEFINE_UNQUOTED(OS_NAME,"`uname -o`")
+else
+	AC_DEFINE_UNQUOTED(OS_NAME,"`uname -sr`")
+fi
+
+AC_PROG_CPP
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_LN_S
+
+AC_DEFINE_UNQUOTED(INSTALLPREFIX, "${prefix}")
+
+AC_PATH_PROG(GMAKE, gmake, no)
+
+if test "x$GMAKE" = "xno"; then
+	AC_PATH_PROG(MAKE, make, no)
+
+	if test "x$MAKE" = "xno"; then
+		AC_MSG_ERROR([make ])
+	fi
+else
+	MAKE="$GMAKE"
+fi
+
+AC_DISABLE_STATIC
+dnl AC_LIBTOOL_DLOPEN
+dnl AM_PROG_LIBTOOL
+dnl AC_SUBST(LIBTOOL_DEPS)
+AC_PROG_MAKE_SET
+AC_PROG_AWK
+
+LIBTOOL="$LIBTOOL --silent"
+
+AC_HEADER_STDC
+AC_STDC_HEADERS
+
+AC_C_CONST
+AC_STRUCT_TM
+AC_C_BIGENDIAN
+
+AC_MSG_CHECKING([for long long])
+AC_TRY_COMPILE([],
+[
+	long long a = 1LL;
+	unsigned long long b = 1LL;
+], [
+	AC_MSG_RESULT([yes])
+	AC_DEFINE([HAVE_LONG_LONG])
+])
+
+AC_MSG_CHECKING([for va_copy])
+AC_TRY_LINK([#include <stdarg.h>], [va_list a, b; va_copy(a, b);], 
+[
+	AC_MSG_RESULT([yes])
+	AC_DEFINE([HAVE_VA_COPY])
+], [
+	AC_MSG_RESULT([no])
+])
+
+AC_MSG_CHECKING([for __va_copy])
+AC_TRY_LINK([#include <stdarg.h>], [va_list a, b; __va_copy(a, b);], 
+[
+	AC_MSG_RESULT([yes])
+	AC_DEFINE([HAVE___VA_COPY])
+], [
+	AC_MSG_RESULT([no])
+])
+
+AC_ARG_WITH(c99-vsnprintf,
+  [  --with-c99-vsnprintf    Target system has C99-compatible vsnprintf()])
+
+if test "x$with_c99_vsnprintf" = "xyes"; then
+	AC_DEFINE([HAVE_C99_VSNPRINTF])
+fi
+
+if test "x$with_c99_vsnprintf" = "x"; then
+	AC_MSG_CHECKING([for C99-compatible vsnprintf()])
+	AC_TRY_RUN(
+	[
+		#include <stdio.h>
+		int main()
+		{
+			char tmp;
+			return (snprintf(&tmp, sizeof(tmp), "test") != 4);
+		}
+	], [
+		AC_MSG_RESULT([yes])
+		AC_DEFINE([HAVE_C99_VSNPRINTF])
+	], [
+		AC_MSG_RESULT([no])
+	])
+fi
+
+
+# AC_CHECK_HEADERS(asm/byteorder.h byteswap.h endian.h machine/endian.h arpa/nameser_compat.h)
+# AC_CHECK_FUNCS(bswap_32 bswap_16)
+
+AC_TYPE_SIGNAL
+AC_FUNC_STRFTIME
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([memset mkdir strcasecmp strchr strlen])
+
+
+
+AC_CHECK_HEADERS(libintl.h)
+ALL_LINGUAS="pl"
+dnl GETTEXT_PACKAGE=$PACKAGE
+dnl AC_SUBST(GETTEXT_PACKAGE)
+dnl AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
+
+dnl -----------------------------------------------------------
+dnl Language Support
+dnl -----------------------------------------------------------
+GETTEXT_PACKAGE=GnomeGadu
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Gettext package name])
+
+IT_PROG_INTLTOOL
+
+AM_GNU_GETTEXT([use-libtool])
+dnl AM_GLIB_GNU_GETTEXT
+
+if test "x$GCC" = "xyes"; then
+   CFLAGS="$CFLAGS -Wall -Wno-uninitialized -Wchar-subscripts -Wnested-externs -Wpointer-arith -Wno-sign-compare -rdynamic"
+fi
+
+PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig"
+
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+
+if test "x$PKG_CONFIG" = "xno"; then
+	AC_MSG_ERROR([pkgconfig ])
+fi
+
+AC_PATH_X
+AC_PATH_XTRA
+CFLAGS="$CFLAGS $X_CFLAGS"
+LDFLAGS="$LDFLAGS $X_LIBS"
+
+AC_SEARCH_LIBS(uuid_generate, uuid)
+
+PKG_CHECK_MODULES(GLIB,[glib-2.0 >= 2.10.3], [
+    ],AC_MSG_ERROR($GLIB_PKG_ERRORS))
+
+PKG_CHECK_MODULES(GTHREAD,gthread-2.0 >= 2.10.3,[
+     ],AC_MSG_ERROR($GTHREAD_PKG_ERRORS))
+    
+PKG_CHECK_MODULES(LIBNOTIFY, libnotify , [
+    ],AC_MSG_ERROR($LIBNOTIFY_OKG_ERRORS))
+
+PKG_CHECK_MODULES(LIBGADU,libgadu,[
+    ],AC_MSG_ERROR($GTK_PKG_ERRORS))
+
+PKG_CHECK_MODULES(GTK,gtk+-2.0 >= 2.8.18,[
+     ],AC_MSG_ERROR($GTK_PKG_ERRORS))
+
+PKG_CHECK_MODULES(LIBGNOME,libgnome-2.0 >= 2.14.1,[
+    ],AC_MSG_ERROR($LIBGNOME_PKG_ERRORS))
+
+PKG_CHECK_MODULES(LIBGNOMEUI,libgnomeui-2.0 >= 2.14.1,[
+    ],AC_MSG_ERROR($LIBGNOMEUI_PKG_ERRORS))
+
+PKG_CHECK_MODULES(LIBGLADE,libglade-2.0 >= 2.5.1,[
+    ],AC_MSG_ERROR($LIBGLADE_PKG_ERRORS))
+
+PKG_CHECK_MODULES(LIBGTKHTML,libgtkhtml-3.8 >= 3.12.1,[
+    ],AC_MSG_ERROR($LIBGLADE_PKG_ERRORS))
+
+PKG_CHECK_MODULES(GNOMEKEYRING,gnome-keyring-1 >= 0.6.0,[
+    ],AC_MSG_ERROR($GNOMEKEYRING_PKG_ERRORS))
+
+PKG_CHECK_MODULES(LIBGALAGO,libgalago >= 0.5.2,[
+    ],AC_MSG_ERROR($LIBGALAGO_PKG_ERRORS))
+
+AM_PATH_ESD(0.2.7 ,[
+    AC_SUBST(ESD_CFLAGS)
+    AC_SUBST(ESD_LIBS)
+    ],[AC_MSG_ERROR([*** sound support for esd need EsounD installed http://www.tux.org/~ricdude/EsounD.html ***])])
+    
+
+CFLAGS="$CFLAGS $GLIB_CFLAGS $GTHREAD_CFLAGS $GTK_CFLAGS $LIBNOTIFY_CFLAGS $LIBGADU_CFLAGS $LIBGNOMEUI_CFLAGS $LIBGNOME_CFLAGS $LIBGLADE_CFLAGS $ESD_CFLAGS $LIBGTKHTML_CFLAGS $GNOMEKEYRING_CFLAGS $LIBGALAGO_CFLAGS"
+LDFLAGS="$LDFLAGS $GLIB_LIBS $GTHREAD_LIBS   $GTK_LIBS   $LIBNOTIFY_LIBS   $LIBGADU_LIBS   $LIBGNOMEUI_LIBS   $LIBGNOME_LIBS   $LIBGLADE_LIBS   $ESD_LIBS   $LIBGTKHTML_LIBS   $GNOMEKEYRING_LIBS   $LIBGALAGO_LIBS"
+
+AC_ARG_ENABLE(debug, [  --enable-debug	  debug mode			default=disabled],
+    if test x$enableval = xyes; then
+	 with_debug=yes
+    else
+	if test "x$enableval" = xno; then
+		with_debug=no
+	else
+		with_debug=yes
+	fi
+    fi,
+    with_debug=no)
+
+if test x$with_debug = xyes; then
+  AC_DEFINE(GNOMEGADU_DEBUG)
+fi
+
+
+AC_ARG_ENABLE(gdb, [  --enable-gdb		  gdb support			default=disabled],
+    if test x$enableval = xyes; then
+	 with_gdb=yes
+    else
+	if test "x$enableval" = xno; then
+		with_gdb=no
+	else
+		with_gdb=yes
+	fi
+    fi,
+    with_gdb=no)
+
+
+if test x$with_gdb = xyes; then
+ CFLAGS="$CFLAGS -ggdb"
+fi
+
+dnl AC_ARG_WITH(dbus, [  --with-dbus		  Build with DBUS plugin])
+dnl if test "x$with_dbus" != "xyes"; then 
+dnl 	with_dbus=no
+dnl else
+dnl 	with_dbus=yes
+dnl 	PKG_CHECK_MODULES(DBUS,dbus-1 dbus-glib-1, [], with_dbus=no)
+dnl 	if test "$with_dbus" = "no"; then
+dnl 	    AC_MSG_ERROR(DBUS_PKG_ERRORS)
+dnl 	fi
+dnl 
+dnl 	AC_SUBST(DBUS_CFLAGS)
+dnl 	AC_SUBST(DBUS_LIBS)
+dnl fi
+dnl 
+dnl AC_ARG_WITH(dbus-dir,[  --with-dbus-dir=DIR   Prefix where D-BUS services are installed (/usr/share/dbus-1/services)],
+dnl             dbus_dir="$withval", dbus_dir="")
+dnl 	    
+dnl if test x$dbus_dir != x ; then
+dnl      DBUS_DIR="$dbus_dir/"
+dnl else
+dnl      DBUS_DIR="/usr/share/dbus-1/services/"
+dnl fi
+dnl 
+dnl AC_SUBST(DBUS_DIR)
+dnl 
+dnl AM_CONDITIONAL(BUILD_DBUS, test "$with_dbus" = "yes")
+
+CFLAGS_CLEAN="$CFLAGS"
+AC_SUBST(CFLAGS_CLEAN)
+
+AC_SUBST(CFLAGS)
+AC_SUBST(LDFLAGS)
+
+AC_OUTPUT([ 
+intl/Makefile 
+po/Makefile.in
+Makefile
+src/Makefile
+pixmaps/Makefile
+])
+
+dnl echo
+dnl echo Build DBUS support : $with_dbus
+echo
+echo Check \"./configure --help\" to see how to enable some features
+echo configure complete, now type \"make\"
+echo
