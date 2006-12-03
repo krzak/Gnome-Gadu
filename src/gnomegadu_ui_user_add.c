@@ -90,11 +90,11 @@ on_AddContact_response (GtkDialog * dialog, gint response, gpointer user_data)
 		
 		changeset =  gconf_change_set_new();
 
-		tmp = g_strconcat (conf_path, "/0uuid", NULL);
+		tmp = g_strconcat (conf_path, "/uuid", NULL);
 		gconf_change_set_set_string (changeset, tmp, g_strdup (uuid_str));
 		g_free (tmp);
 		
-		tmp = g_strconcat (conf_path, "/1group", NULL);
+		tmp = g_strconcat (conf_path, "/group", NULL);
 		gconf_change_set_set_string (changeset, tmp, group);	//moze tu trzeba g_strdup ??
 		g_free (tmp);
 

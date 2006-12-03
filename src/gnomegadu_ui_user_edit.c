@@ -30,6 +30,7 @@ on_EditContact_response (GtkDialog * dialog, gint response, gpointer user_data)
 		gchar *nickName = g_strdup (gtk_entry_get_text (nickNameEntry));
 		gchar *uin = g_strdup (gtk_entry_get_text (UINEntry));
 		gchar *group = gtk_combo_box_get_active_text(GTK_COMBO_BOX(GroupComboBoxEntry));
+		gchar *group_prev = NULL;
 		gchar *uin_prev = NULL;
 		gchar *conf_path = NULL;
 		gchar *tmp = NULL;
@@ -37,7 +38,7 @@ on_EditContact_response (GtkDialog * dialog, gint response, gpointer user_data)
 		gchar *profile = gnomegadu_conf_get_profile ();
 		gchar *profile_path = gnomegadu_conf_find_account_path (profile);
 
-		uuid_str = g_object_get_data (G_OBJECT (gladexml_user_edit), "0uuid");
+		uuid_str = g_object_get_data (G_OBJECT (gladexml_user_edit), "uuid");
 
 		if (g_utf8_strlen (display, -1) == 0)
 		{
@@ -52,7 +53,8 @@ on_EditContact_response (GtkDialog * dialog, gint response, gpointer user_data)
 
 		changeset =  gconf_change_set_new();
 
-		tmp = g_strconcat (conf_path, "/1group", NULL);
+		tmp = g_strconcat (conf_path, "/group", NULL);
+		group_prev = g_strdup(gconf_client_get_string(gconf,tmp,NULL));
 		gconf_change_set_set_string (changeset, tmp, group);	//moze tu trzeba g_strdup ??
 		g_free (tmp);
 
@@ -89,6 +91,13 @@ on_EditContact_response (GtkDialog * dialog, gint response, gpointer user_data)
 
 		g_free (tmp);
 		/* <- */
+		
+		/* how about change group */
+		//if (g_strcasecmp(group_prev, group))
+		//{
+		    /* usunąć trzeba napewno   */
+		    /* i dodać w nowym miejscu */
+		//}
 
 		gconf_client_suggest_sync (gconf, NULL);
 		gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -101,6 +110,7 @@ on_EditContact_response (GtkDialog * dialog, gint response, gpointer user_data)
 		g_free (display);
 		g_free (uin);
 		g_free (group);
+		g_free (group_prev);
 
 		g_free (conf_path);
 		g_free (profile);
@@ -161,7 +171,7 @@ on_ContactEdit_activate (GtkWidget * widget, GdkEvent * event, gpointer user_dat
 		gtk_tree_model_get (GTK_TREE_MODEL (contacts_tree_store), &iter, UI_CONTACTS_COLUMN_UUID, &uuid, -1);
 		g_assert (uuid);
 
-		g_object_set_data (G_OBJECT (gladexml_user_edit), "0uuid", g_strdup (uuid));
+		g_object_set_data (G_OBJECT (gladexml_user_edit), "uuid", g_strdup (uuid));
 		path = gnomegadu_conf_contact_path_find_uuid (uuid);
 		g_free (uuid);
 
@@ -179,7 +189,7 @@ on_ContactEdit_activate (GtkWidget * widget, GdkEvent * event, gpointer user_dat
 		    gtk_list_store_append(group_store,&group_iter);
 		    gtk_list_store_set (group_store, &group_iter, 0,g_strdup(group_name), -1);
 
-		    tmp = g_strconcat (path, "/1group", NULL);
+		    tmp = g_strconcat (path, "/group", NULL);
 		    group_user = gconf_client_get_string (gconf, tmp, NULL);
 
 		    if (group_user && (g_utf8_strlen(group_user,-1) > 0) && !g_utf8_collate(group_user,group_name))

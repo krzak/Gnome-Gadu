@@ -4,7 +4,8 @@
 #include <gconf/gconf-client.h>
 #include <gnome-keyring-1/gnome-keyring.h>
 
-#define GNOMEGADU_CONF_ROOT "/apps/gnome-gadu"
+#define GNOMEGADU_CONF_ROOT		"/apps/gnome-gadu"
+#define GCONF_CONTACT_KEYS_COUNT	7
 
 GConfClient *gconf;
 

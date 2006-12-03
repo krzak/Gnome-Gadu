@@ -88,7 +88,7 @@ gnomegadu_ui_import_userlist_process_line (gchar * line, GConfChangeSet *changes
 		uuid_generate (uuid);
 		uuid_unparse (uuid, uuid_str);
 		conf_path = g_strconcat (profile_path, "/contacts/", uuid_str, NULL);
-		tmp = g_strconcat (conf_path, "/0uuid", NULL);
+		tmp = g_strconcat (conf_path, "/uuid", NULL);
 		gconf_change_set_set_string (changeset, tmp, g_strdup (uuid_str));
 		g_free (tmp);
 	}
@@ -96,7 +96,7 @@ gnomegadu_ui_import_userlist_process_line (gchar * line, GConfChangeSet *changes
 	{
 		conf_path = g_strdup (found_path);
 
-		tmp = g_strconcat (conf_path, "/0uuid", NULL);
+		tmp = g_strconcat (conf_path, "/uuid", NULL);
 		uuid_str = gconf_client_get_string (gconf, tmp, NULL);
 		g_free (tmp);
 		g_free (found_path);
@@ -127,7 +127,7 @@ gnomegadu_ui_import_userlist_process_line (gchar * line, GConfChangeSet *changes
 			g_free (tmp);
 			break;
 		case 5:	//group
-			tmp = g_strconcat (conf_path, "/1group", NULL);
+			tmp = g_strconcat (conf_path, "/group", NULL);
 			gconf_change_set_set_string (changeset, tmp, g_strdup (split_line[i]));	//moze tu trzeba g_strdup ??
 			g_free (tmp);
 			break;

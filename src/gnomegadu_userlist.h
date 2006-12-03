@@ -10,10 +10,20 @@ void gconf_client_contacts_value_changed_cb (GConfClient * client, guint cnxn_id
 
 GnomeGaduProtocolStatus gnomegadu_userlist_get_model_status (gchar * uuid_search);
 
-void gnomegadu_userlist_set_model_status (gchar * uin_str, GnomeGaduProtocolStatus new_status, gchar *status_descr);
+void gnomegadu_userlist_set_model_status (gchar * uin_str, GnomeGaduProtocolStatus new_status, gchar * status_descr);
 void gnomegadu_userlist_cleanup_model_status ();
 
-GList       *gnomegadu_userlist_get_groups();
-GtkTreeIter *gnomegadu_userlist_group_find_iter(GtkTreeStore *treestore, gchar *group_name);
+GList *gnomegadu_userlist_get_groups ();
+
+GtkTreeIter *gnomegadu_userlist_group_find_iter (GtkTreeStore * treestore, gchar * group_name);
+
+GtkTreeIter *gnomegadu_userlist_uuid_find_iter (GtkTreeStore * treestore, GtkTreeIter * parent_iter, gchar * search_uuid);
+
+gchar *gnomegadu_userlist_get_group_name (gchar * group);
+
+void gnomegadu_userlist_find_or_create_group (GtkTreeStore * treestore, gchar * group);
+
+void gnomegadu_userlist_clean_empty_groups (GtkTreeStore * treestore);
+
 
 #endif

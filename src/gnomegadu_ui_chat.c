@@ -290,7 +290,7 @@ gnomegadu_ui_chats_set_status (gchar * uin_str, GnomeGaduProtocolStatus new_stat
 	if (!path)
 		return;
 
-	path_uuid = g_strconcat (path, "/0uuid", NULL);
+	path_uuid = g_strconcat (path, "/uuid", NULL);
 	uuid_search = gconf_client_get_string (gconf, path_uuid, NULL);
 
 	g_free (path);

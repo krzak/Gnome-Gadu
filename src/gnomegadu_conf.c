@@ -11,7 +11,7 @@
 #include "gnomegadu_userlist.h"
 #include "gnomegadu_protocol.h"
 
-static GnomeKeyringAttributeList *gnomegadu_conf_construct_keyring_attributes(gchar *uin);
+static GnomeKeyringAttributeList *gnomegadu_conf_construct_keyring_attributes (gchar * uin);
 
 
 gboolean
@@ -19,25 +19,24 @@ gnomegadu_conf_rename_account (gchar * old_name, gchar * new_name)
 {
 	gboolean ret = FALSE;
 	gchar *default_account, *profile;
-	gchar *account_path = gnomegadu_conf_find_account_path(old_name);
-	gchar *name_path = g_strconcat(account_path,"/name",NULL);
+	gchar *account_path = gnomegadu_conf_find_account_path (old_name);
+	gchar *name_path = g_strconcat (account_path, "/name", NULL);
 
-	g_print("rename: %s -> %s\n",old_name, new_name);
+	g_print ("rename: %s -> %s\n", old_name, new_name);
 
-	ret = gconf_client_set_string(gconf, name_path, g_strdup(new_name), NULL);
+	ret = gconf_client_set_string (gconf, name_path, g_strdup (new_name), NULL);
 
 	default_account = gnomegadu_conf_get_default_account_name ();
 	if (default_account && !g_utf8_collate (default_account, old_name))
 		gnomegadu_conf_set_default_account_name (new_name);
 
-	profile = gnomegadu_conf_get_profile();
-	if (profile && !g_utf8_collate (old_name, profile))
-	{
-	    gchar *path = g_strconcat (GNOMEGADU_CONF_ROOT "/profile", NULL);
-	    ret = gconf_client_set_string (gconf, path, g_strdup(new_name), NULL);
-	    g_free(path);
+	profile = gnomegadu_conf_get_profile ();
+	if (profile && !g_utf8_collate (old_name, profile)) {
+		gchar *path = g_strconcat (GNOMEGADU_CONF_ROOT "/profile", NULL);
+		ret = gconf_client_set_string (gconf, path, g_strdup (new_name), NULL);
+		g_free (path);
 	}
-	
+
 	gconf_client_suggest_sync (gconf, NULL);
 
 	g_free (default_account);
@@ -57,8 +56,7 @@ gnomegadu_conf_add_account (gchar * name, gchar * uin, gchar * password)
 	gchar *account_name;
 	gchar *name_name;
 
-	if (name && gnomegadu_conf_find_account_path (name))
-	{
+	if (name && gnomegadu_conf_find_account_path (name)) {
 		dialog = gtk_message_dialog_new_with_markup (NULL,
 							     GTK_DIALOG_DESTROY_WITH_PARENT,
 							     GTK_MESSAGE_ERROR,
@@ -72,8 +70,7 @@ gnomegadu_conf_add_account (gchar * name, gchar * uin, gchar * password)
 
 	account_name = g_strdup_printf ("%s%d", "losowe", next_num);
 	//znajdz kolejny numer, aż jakiś będzie wolny
-	while (gnomegadu_conf_find_account_path (account_name))
-	{
+	while (gnomegadu_conf_find_account_path (account_name)) {
 		next_num = g_random_int ();
 		g_free (account_name);
 		account_name = g_strdup_printf ("%s%d", "losowe", next_num);
@@ -86,10 +83,10 @@ gnomegadu_conf_add_account (gchar * name, gchar * uin, gchar * password)
 	g_free (path);
 
 	if (uin)
-		gnomegadu_conf_set_account_uin(name_name,uin);
+		gnomegadu_conf_set_account_uin (name_name, uin);
 
 	if (password)
-		gnomegadu_conf_set_account_password(name_name,password);
+		gnomegadu_conf_set_account_password (name_name, password);
 
 	gconf_client_suggest_sync (gconf, NULL);
 	g_free (account_name);
@@ -110,11 +107,9 @@ gnomegadu_conf_del_account (gchar * account_name)
 	g_assert (account_name);
 
 	root = gnomegadu_conf_find_account_path (account_name);
-	if (root)
-	{
+	if (root) {
 		path = g_strconcat (root, "/name", NULL);
-		if (!gconf_client_recursive_unset (gconf, root, 0, &error))
-		{
+		if (!gconf_client_recursive_unset (gconf, root, 0, &error)) {
 			g_printerr ("unable remove: %s, %s\n", root, error->message);
 			g_free (root);
 			g_free (path);
@@ -146,12 +141,9 @@ gnomegadu_conf_sound_enabled_notify (GConfClient * client, guint cnxn_id, GConfE
 	GConfValue *value = gconf_entry_get_value (entry);
 	int val = gconf_value_get_bool (value);
 
-	if (val == TRUE)
-	{
+	if (val == TRUE) {
 		gnome_sound_init (NULL);
-	}
-	else
-	{
+	} else {
 		gnome_sound_shutdown ();
 	}
 }
@@ -178,19 +170,17 @@ gnomegadu_conf_find_account_path (gchar * account_name)
 	if (!list)
 		return NULL;
 
-	while (list)
-	{
+	while (list) {
 		root = (gchar *) list->data;
 		path = g_strconcat (root, "/name", NULL);
 		check_name = gconf_client_get_string (gconf, path, NULL);
-		if (check_name && !g_strcasecmp (check_name, account_name))
-		{
+		if (check_name && !g_strcasecmp (check_name, account_name)) {
 			ret = g_strdup (root);
 			g_free (path);
 			break;
 		}
 		g_free (path);
-		list = g_slist_next(list);
+		list = g_slist_next (list);
 	}
 
 	g_slist_foreach (list_start, gnomegadu_conf_free_list_of_string, NULL);
@@ -214,47 +204,44 @@ gnomegadu_conf_get_account_uin (gchar * account_name)
 gboolean
 gnomegadu_conf_set_account_uin (gchar * account_name, gchar * value_uin)
 {
-	gchar                     *keyring = NULL;
-	gchar                     *uin = NULL;
-	gchar                     *current_password = NULL;
+	gchar *keyring = NULL;
+	gchar *uin = NULL;
+	gchar *current_password = NULL;
 	GnomeKeyringAttributeList *attributes = NULL;
-	GnomeKeyringResult         keyringret;
-	GList			  *result;
-	gboolean		   ret;
-	gboolean		   change = FALSE;
+	GnomeKeyringResult keyringret;
+	GList *result;
+	gboolean ret;
+	gboolean change = FALSE;
 
 	//Keyring part
-	gnome_keyring_get_default_keyring_sync(&keyring);
-        uin = gnomegadu_conf_get_account_uin(account_name);
-	
-	if (keyring && g_strcasecmp(uin,value_uin) && uin && value_uin && (strlen(uin) > 0) && (strlen(value_uin) > 0)) //zmiana uin
+	gnome_keyring_get_default_keyring_sync (&keyring);
+	uin = gnomegadu_conf_get_account_uin (account_name);
+
+	if (keyring && g_strcasecmp (uin, value_uin) && uin && value_uin && (strlen (uin) > 0) && (strlen (value_uin) > 0))	//zmiana uin
 	{
-	    attributes = gnomegadu_conf_construct_keyring_attributes(uin);
-	    keyringret = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, /* type */
-				attributes, /* attribute list */
-				&result);
-				
+		attributes = gnomegadu_conf_construct_keyring_attributes (uin);
+		keyringret = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD,	/* type */
+							    attributes,	/* attribute list */
+							    &result);
 
-	    if (keyringret)
-	    {
-		g_print ("Couldn't get UIN: %s\n",account_name);
-	    } 
-	    else if (g_list_length(result) == 1)
-	    {
-		current_password = gnomegadu_conf_get_account_password(account_name);
-		
-		GnomeKeyringFound *found = (GnomeKeyringFound*)result->data;
-		keyringret = gnome_keyring_item_delete_sync(keyring,found->item_id);
 
-		g_print("Remove from keyring: %s %d\n",uin,keyringret);
-		change = TRUE;
-		
-	    }
+		if (keyringret) {
+			g_print ("Couldn't get UIN: %s\n", account_name);
+		} else if (g_list_length (result) == 1) {
+			current_password = gnomegadu_conf_get_account_password (account_name);
 
-	    gnome_keyring_found_list_free(result);
-	    gnome_keyring_attribute_list_free (attributes);
+			GnomeKeyringFound *found = (GnomeKeyringFound *) result->data;
+			keyringret = gnome_keyring_item_delete_sync (keyring, found->item_id);
+
+			g_print ("Remove from keyring: %s %d\n", uin, keyringret);
+			change = TRUE;
+
+		}
+
+		gnome_keyring_found_list_free (result);
+		gnome_keyring_attribute_list_free (attributes);
 	}
-        g_free(uin);
+	g_free (uin);
 
 	//GConf part
 	gchar *root = gnomegadu_conf_find_account_path (account_name);
@@ -263,11 +250,11 @@ gnomegadu_conf_set_account_uin (gchar * account_name, gchar * value_uin)
 	ret = gconf_client_set_string (gconf, path, g_strdup (value_uin), NULL);
 
 	if (current_password && change)
-	    gnomegadu_conf_set_account_password(account_name,current_password);
-	
+		gnomegadu_conf_set_account_password (account_name, current_password);
+
 	g_free (root);
 	g_free (path);
-	
+
 	return ret;
 }
 
@@ -291,8 +278,7 @@ gnomegadu_conf_set_profile (gchar * account_name)
 	gnomegedu_ui_init_userlist ();
 
 	prev_profile = gconf_client_get_string (gconf, path, NULL);
-	if (prev_profile)
-	{
+	if (prev_profile) {
 		prev_profile_path = gnomegadu_conf_find_account_path (prev_profile);
 		path_contacts = g_strconcat (prev_profile_path, "/contacts", NULL);
 
@@ -305,8 +291,9 @@ gnomegadu_conf_set_profile (gchar * account_name)
 
 	path_profile = gnomegadu_conf_find_account_path (account_name);
 	path_contacts = g_strconcat (path_profile, "/contacts", NULL);
-	gconf_client_notify_add (gconf, path_contacts, (GConfClientNotifyFunc) gconf_client_contacts_value_changed_cb, NULL, NULL, NULL);
-	gconf_client_suggest_sync(gconf,NULL);
+	gconf_client_notify_add (gconf, path_contacts, (GConfClientNotifyFunc) gconf_client_contacts_value_changed_cb, NULL,
+				 NULL, NULL);
+	gconf_client_suggest_sync (gconf, NULL);
 
 	g_free (path_profile);
 	g_free (path_contacts);
@@ -327,44 +314,40 @@ gnomegadu_conf_get_profile ()
 gchar *
 gnomegadu_conf_get_account_password (gchar * account_name)
 {
-	gchar                     *keyring = NULL;
-	gchar                     *ret = NULL;
-	gchar                     *uin = NULL;
-	gchar                     *pass = NULL;
+	gchar *keyring = NULL;
+	gchar *ret = NULL;
+	gchar *uin = NULL;
+	gchar *pass = NULL;
 	GnomeKeyringAttributeList *attributes = NULL;
-	GnomeKeyringResult         keyringret;
-	GList			   *result;
+	GnomeKeyringResult keyringret;
+	GList *result;
 
-	gnome_keyring_get_default_keyring_sync(&keyring);
-	
-	if (keyring)
-	{
-	    uin = gnomegadu_conf_get_account_uin(account_name);
-	    attributes = gnomegadu_conf_construct_keyring_attributes(uin);
-	    keyringret = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD, /* type */
-				attributes, /* attribute list */
-				&result);
-				
+	gnome_keyring_get_default_keyring_sync (&keyring);
 
-	    if (keyringret)
-	    {
-		g_print ("Couldn't get password: %s\n",account_name);
-	    } 
-	    else if (g_list_length(result) == 1)
-	    {
-		GnomeKeyringFound *found = (GnomeKeyringFound*)result->data;
-		if (found->secret)
-		    pass = g_strdup(found->secret);
-		    
-		if (g_utf8_strlen(pass,-1) > 0)
-		    ret = pass;
-		else
-		    g_free(pass);
-	    }
+	if (keyring) {
+		uin = gnomegadu_conf_get_account_uin (account_name);
+		attributes = gnomegadu_conf_construct_keyring_attributes (uin);
+		keyringret = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD,	/* type */
+							    attributes,	/* attribute list */
+							    &result);
 
-	    gnome_keyring_found_list_free(result);
-	    gnome_keyring_attribute_list_free (attributes);
-	    g_free(uin);
+
+		if (keyringret) {
+			g_print ("Couldn't get password: %s\n", account_name);
+		} else if (g_list_length (result) == 1) {
+			GnomeKeyringFound *found = (GnomeKeyringFound *) result->data;
+			if (found->secret)
+				pass = g_strdup (found->secret);
+
+			if (g_utf8_strlen (pass, -1) > 0)
+				ret = pass;
+			else
+				g_free (pass);
+		}
+
+		gnome_keyring_found_list_free (result);
+		gnome_keyring_attribute_list_free (attributes);
+		g_free (uin);
 	}
 
 	return ret;
@@ -382,41 +365,40 @@ gnomegadu_conf_get_account_password (gchar * account_name)
 gboolean
 gnomegadu_conf_set_account_password (gchar * account_name, gchar * value_password)
 {
-	gboolean ret  = FALSE;
+	gboolean ret = FALSE;
 	/* EXPERIMENTAL KEYRING SUPPORT */
-	gchar                     *uin = NULL;
-	gchar                     *keyring = NULL;
+	gchar *uin = NULL;
+	gchar *keyring = NULL;
 	GnomeKeyringAttributeList *attributes = NULL;
-	GnomeKeyringResult         keyringret;
-	guint32                    item;
-		
-	gnome_keyring_get_default_keyring_sync(&keyring);
-	
-	if (keyring)
-	{
-	    uin = gnomegadu_conf_get_account_uin(account_name);
-	    attributes = gnomegadu_conf_construct_keyring_attributes(uin);
+	GnomeKeyringResult keyringret;
+	guint32 item;
 
-	    keyringret = gnome_keyring_item_create_sync (keyring, /* Use default keyring */
-				GNOME_KEYRING_ITEM_NETWORK_PASSWORD, /* type */
-		    		"GnomeGadu Password", /* name */
-				attributes, /* attribute list */
-				value_password, /* password */
-				TRUE, /* Update if already exists */
-				&item);
-	
-	    gnome_keyring_attribute_list_free (attributes);
+	gnome_keyring_get_default_keyring_sync (&keyring);
 
-	    if (keyringret != GNOME_KEYRING_RESULT_OK && keyringret != GNOME_KEYRING_RESULT_ALREADY_EXISTS)
-		ret = FALSE;
-	    else
-		ret = TRUE;
-	
-	    g_print("Save password in keyring %s %d %d\n",keyring,ret,keyringret);
+	if (keyring) {
+		uin = gnomegadu_conf_get_account_uin (account_name);
+		attributes = gnomegadu_conf_construct_keyring_attributes (uin);
 
-	    g_free (uin);
+		keyringret = gnome_keyring_item_create_sync (keyring,	/* Use default keyring */
+							     GNOME_KEYRING_ITEM_NETWORK_PASSWORD,	/* type */
+							     "GnomeGadu Password",	/* name */
+							     attributes,	/* attribute list */
+							     value_password,	/* password */
+							     TRUE,	/* Update if already exists */
+							     &item);
+
+		gnome_keyring_attribute_list_free (attributes);
+
+		if (keyringret != GNOME_KEYRING_RESULT_OK && keyringret != GNOME_KEYRING_RESULT_ALREADY_EXISTS)
+			ret = FALSE;
+		else
+			ret = TRUE;
+
+		g_print ("Save password in keyring %s %d %d\n", keyring, ret, keyringret);
+
+		g_free (uin);
 	}
-	
+
 	return ret;
 
 /* DEPRECATED, use keyring instead
@@ -455,8 +437,7 @@ gnomegadu_conf_set_default_account_name (gchar * account_name)
 
 	if (!account_name)
 		ret = gconf_client_unset (gconf, path, NULL);
-	else
-	{
+	else {
 		ret = gconf_client_set_string (gconf, path, g_strdup (account_name), NULL);
 	}
 
@@ -474,7 +455,8 @@ gnomegadu_conf_init ()
 
 	gconf_client_add_dir (gconf, GNOMEGADU_CONF_ROOT, GCONF_CLIENT_PRELOAD_RECURSIVE, NULL);
 
-	if (!gconf_client_notify_add (gconf, GNOMEGADU_CONF_ROOT "/sound", gnomegadu_conf_sound_enabled_notify, NULL, NULL, &error))
+	if (!gconf_client_notify_add
+	    (gconf, GNOMEGADU_CONF_ROOT "/sound", gnomegadu_conf_sound_enabled_notify, NULL, NULL, &error))
 		g_printerr ("%s\n", error->message);
 
 	gconf_client_suggest_sync (gconf, NULL);
@@ -511,15 +493,13 @@ gnomegadu_conf_contact_path_find_uin (gchar * uin)
 	if (!list)
 		return NULL;
 
-	while (list)
-	{
+	while (list) {
 		root = (gchar *) list->data;
 		path = g_strconcat (root, "/uin", NULL);
 		check_uin = gconf_client_get_string (gconf, path, NULL);
 		g_free (path);
 
-		if (check_uin && !g_ascii_strcasecmp (check_uin, uin))
-		{
+		if (check_uin && !g_ascii_strcasecmp (check_uin, uin)) {
 			ret = g_strdup (root);
 			g_free (check_uin);
 			break;
@@ -544,25 +524,22 @@ gnomegadu_conf_contact_path_find_uuid (gchar * uuid)
 	gchar *ret = NULL;
 	GSList *list, *list_start;
 
-	if (!uuid)
-	{
+	if (!uuid) {
 		g_printerr ("gnomegadu_conf_contact_path_find_uuid(): no UUID parameter\n");
 		return NULL;
 	}
-		
+
 	list = gnomegadu_conf_get_contacts ();
 	list_start = list;
 
 	if (!list)
 		return NULL;
 
-	while (list)
-	{
+	while (list) {
 		root = (gchar *) list->data;
-		path = g_strconcat (root, "/0uuid", NULL);
+		path = g_strconcat (root, "/uuid", NULL);
 		check_uuid = gconf_client_get_string (gconf, path, NULL);
-		if (check_uuid && !g_strcasecmp (check_uuid, uuid))
-		{
+		if (check_uuid && !g_strcasecmp (check_uuid, uuid)) {
 			ret = g_strdup (root);
 			g_free (check_uuid);
 			g_free (path);
@@ -575,43 +552,43 @@ gnomegadu_conf_contact_path_find_uuid (gchar * uuid)
 
 	g_slist_foreach (list_start, gnomegadu_conf_free_list_of_string, NULL);
 	g_slist_free (list_start);
-	
+
 	return ret;
 }
 
 static
-gchar *gnomegadu_conf_contact_get_a_for_uuid(gchar *a, gchar *uuid)
+gchar *
+gnomegadu_conf_contact_get_a_for_uuid (gchar * a, gchar * uuid)
 {
 	gchar *display = NULL;
 	gchar *tmp = NULL;
 	gchar *path = NULL;
 
 	path = gnomegadu_conf_contact_path_find_uuid (uuid);
-	if (path)
-	{
+	if (path) {
 		tmp = g_strconcat (path, a, NULL);
 		display = gconf_client_get_string (gconf, tmp, NULL);
 	} else {
-		display = g_strdup(uuid);
+		display = g_strdup (uuid);
 	}
-	
+
 	g_free (tmp);
 	g_free (path);
-	
+
 	return display;
 }
 
 gchar *
 gnomegadu_conf_contact_get_uin_for_uuid (gchar * uuid)
 {
-    return gnomegadu_conf_contact_get_a_for_uuid("/uin",uuid);
+	return gnomegadu_conf_contact_get_a_for_uuid ("/uin", uuid);
 }
 
 
 gchar *
 gnomegadu_conf_contact_get_display_for_uuid (gchar * uuid)
 {
-    return gnomegadu_conf_contact_get_a_for_uuid("/display",uuid);
+	return gnomegadu_conf_contact_get_a_for_uuid ("/display", uuid);
 }
 
 gchar *
@@ -622,12 +599,11 @@ gnomegadu_conf_contact_get_uuid_for_uin (gchar * uin)
 	gchar *path = NULL;
 
 	path = gnomegadu_conf_contact_path_find_uin (uin);
-	if (path)
-	{
-		tmp = g_strconcat (path, "/0uuid", NULL);
+	if (path) {
+		tmp = g_strconcat (path, "/uuid", NULL);
 		uuid = gconf_client_get_string (gconf, tmp, NULL);
 	} else {
-		uuid = g_strdup(uin); //hm...
+		uuid = g_strdup (uin);	//hm...
 	}
 
 	g_free (tmp);
@@ -637,22 +613,23 @@ gnomegadu_conf_contact_get_uuid_for_uin (gchar * uin)
 
 
 static
-GnomeKeyringAttributeList *gnomegadu_conf_construct_keyring_attributes(gchar *uin)
+GnomeKeyringAttributeList *
+gnomegadu_conf_construct_keyring_attributes (gchar * uin)
 {
 	GnomeKeyringAttributeList *ret_attributes = NULL;
-	GnomeKeyringAttribute      attribute;
-        ret_attributes = gnome_keyring_attribute_list_new ();
+	GnomeKeyringAttribute attribute;
+	ret_attributes = gnome_keyring_attribute_list_new ();
 
 	attribute.name = g_strdup ("protocol");
 	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
-	attribute.value.string = g_strdup ("gadugadu"); //gnome apps use gadugadu instead gg
+	attribute.value.string = g_strdup ("gadugadu");	//gnome apps use gadugadu instead gg
 	g_array_append_val (ret_attributes, attribute);
 
 	attribute.name = g_strdup ("user");
 	attribute.type = GNOME_KEYRING_ATTRIBUTE_TYPE_STRING;
 	attribute.value.string = g_strdup (uin);
 	g_array_append_val (ret_attributes, attribute);
-	
+
 	return ret_attributes;
 }
 
