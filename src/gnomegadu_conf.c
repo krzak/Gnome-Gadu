@@ -103,12 +103,49 @@ gnomegadu_conf_del_account (gchar * account_name)
 	gchar *path;
 	gchar *root;
 	gchar *default_account;
+	gchar *keyring = NULL;
+	gchar *uin = NULL;
+	GnomeKeyringAttributeList *attributes = NULL;
+	GnomeKeyringResult keyringret;
+	GList *result;
 
 	g_assert (account_name);
+
+	g_print ("Trying remove from keyring\n");
 
 	root = gnomegadu_conf_find_account_path (account_name);
 	if (root) {
 		path = g_strconcat (root, "/name", NULL);
+
+		g_print ("root found with path %s\n", path);
+
+		//Keyring part
+		uin = gnomegadu_conf_get_account_uin(account_name);
+
+		gnome_keyring_get_default_keyring_sync (&keyring);
+		uin = gnomegadu_conf_get_account_uin (account_name);
+
+		if (keyring && uin)
+		{
+			attributes = gnomegadu_conf_construct_keyring_attributes (uin);
+			keyringret = gnome_keyring_find_items_sync (GNOME_KEYRING_ITEM_NETWORK_PASSWORD,
+								    attributes,
+								    &result);
+
+
+			if (keyringret) {
+				g_print ("Couldn't get UIN: %s\n", account_name);
+			} else if (g_list_length (result) == 1) {
+				GnomeKeyringFound *found = (GnomeKeyringFound *) result->data;
+				keyringret = gnome_keyring_item_delete_sync (keyring, found->item_id);
+				g_print ("Remove from keyring: %s %d\n", uin, keyringret);
+			}
+
+			gnome_keyring_found_list_free (result);
+			gnome_keyring_attribute_list_free (attributes);
+		}
+
+		/* gconf part */
 		if (!gconf_client_recursive_unset (gconf, root, 0, &error)) {
 			g_printerr ("unable remove: %s, %s\n", root, error->message);
 			g_free (root);
@@ -122,9 +159,13 @@ gnomegadu_conf_del_account (gchar * account_name)
 
 		gconf_client_suggest_sync (gconf, NULL);
 
+
+
 		g_free (default_account);
 		g_free (root);
 		g_free (path);
+		g_free (uin);
+		g_free (keyring);
 	}
 	return TRUE;
 }
