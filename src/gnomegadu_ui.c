@@ -18,12 +18,32 @@
 
 
 gboolean
-on_ContactsTreeView_button_press_event (GtkWidget * widget, GdkEventButton * event, gpointer user_data)
+on_ContactsTreeView_button_press_event (GtkTreeView * treeview, GdkEventButton * event, gpointer user_data)
 {
+	GtkTreePath *path = NULL;
+	GtkTreeViewColumn *column = NULL;
+	GtkMenu *menu = NULL;
+	gint cell_x, cell_y;
+
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
-		GtkMenu *menu = GTK_MENU (glade_xml_get_widget (gladexml_menu, "ContactsPopupMenu"));
+		menu = GTK_MENU (glade_xml_get_widget (gladexml_menu, "ContactsPopupMenu"));
 		g_assert (menu);
-		gtk_menu_popup (menu, NULL, NULL, NULL, NULL, event->button, event->time);
+
+		if (gtk_tree_view_get_path_at_pos (treeview, event->x, event->y, &path, &column, &cell_x, &cell_y)) {
+			GtkTreeModel *model;
+			GtkTreeIter iter;
+			gboolean is_group;
+
+			model = gtk_tree_view_get_model (treeview);
+			if (gtk_tree_model_get_iter (model, &iter, path)) {
+				gtk_tree_model_get (model, &iter, UI_CONTACTS_COLUMN_IS_GROUP, &is_group, -1);
+
+				if (!is_group)
+					gtk_menu_popup (menu, NULL, NULL, NULL, NULL, event->button, event->time);
+			}
+		}
+		if (path)
+			gtk_tree_path_free (path);
 	}
 
 	return FALSE;
@@ -41,9 +61,8 @@ on_ContactsTreeView_cursor_changed (GtkTreeView * treeview, gpointer user_data)
 	gchar *path = NULL;
 	gchar *tmp = NULL;
 	gchar *uin = NULL;
-	gchar *first_name;
-	gchar *last_name;
-	gchar *group;
+	gchar *first_name = NULL;
+	gchar *last_name = NULL;
 	GtkLabel *label_uin = NULL;
 	GtkLabel *label_details = NULL;
 	GList *selected_list = NULL;
@@ -87,12 +106,6 @@ on_ContactsTreeView_cursor_changed (GtkTreeView * treeview, gpointer user_data)
 		tmp = g_strconcat (path, "/last_name", NULL);
 		last_name = gconf_client_get_string (gconf, tmp, NULL);
 		g_free (tmp);
-
-/*
-		tmp = g_strconcat (path, "/group", NULL);
-		group = gconf_client_get_string (gconf, tmp, NULL);
-		g_free (tmp);
-*/
 
 		label_uin = GTK_LABEL (glade_xml_get_widget (gladexml, "ContactDetailsTitleLabel"));
 		gtk_label_set_text (label_uin, uin);
@@ -222,7 +235,7 @@ gnomegadu_contact_list_expander_cell_data_func (GtkTreeViewColumn * column,
 }
 
 static
-    gboolean
+ gboolean
 gnomegadu_contacts_selection_cb (GtkTreeSelection * selection,
 				 GtkTreeModel * model, GtkTreePath * path, gboolean path_currently_selected, gpointer data)
 {
@@ -485,6 +498,7 @@ gnomegedu_ui_init_userlist ()
 
 	gtk_tree_view_set_model (contacts_tree_view, GTK_TREE_MODEL (contacts_tree_store));
 
+	gtk_tree_view_expand_all (contacts_tree_view);
 }
 
 static gboolean

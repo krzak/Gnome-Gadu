@@ -18,7 +18,10 @@ gboolean gnomegadu_protocol_ping(gpointer data)
 	if (gnomegadu_gadugadu_session)
 	    gg_ping (gnomegadu_gadugadu_session);
 	else
+	{
+	    g_printerr("Ping disabled");
 	    return FALSE;
+	}
 	    
 	return TRUE;
 }

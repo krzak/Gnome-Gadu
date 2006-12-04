@@ -132,6 +132,7 @@ gconf_client_contacts_value_changed_cb (GConfClient * client, guint cnxn_id, GCo
 
 				gint column;
 				GtkTreeIter *new_group_iter = NULL;
+				GtkTreeIter iter;
 
 				/* tutaj troche za duzo sie dzieje */
 				//add to new place
@@ -141,7 +142,6 @@ gconf_client_contacts_value_changed_cb (GConfClient * client, guint cnxn_id, GCo
 				    gnomegadu_userlist_group_find_iter (contacts_tree_store, gconf_value_get_string (value));
 
 				if (new_group_iter) {
-					GtkTreeIter iter;
 					/* create new one copying from old one */
 					gtk_tree_store_append (contacts_tree_store, &iter, new_group_iter);
 
@@ -153,9 +153,21 @@ gconf_client_contacts_value_changed_cb (GConfClient * client, guint cnxn_id, GCo
 						g_value_unset (&column_value);
 					}
 
+					/* expand to show row */
+					if (gtk_tree_view_get_model (contacts_tree_view)) {
+						GtkTreePath *treepath =
+						    gtk_tree_model_get_path (GTK_TREE_MODEL (contacts_tree_store), &iter);
+						gtk_tree_view_expand_to_path (contacts_tree_view, treepath);
+						gtk_tree_path_free (treepath);
+					}
+
 				}
 				//remove from old place
 				gtk_tree_store_remove (contacts_tree_store, iter_contact);
+				
+				/* set new iter as current */
+				gtk_tree_iter_free(iter_contact);
+				gtk_tree_iter_copy(&iter);
 
 				if (new_group_iter)
 					gtk_tree_iter_free (new_group_iter);
@@ -615,6 +627,8 @@ gnomegadu_userlist_find_or_create_group (GtkTreeStore * treestore, gchar * group
 	gchar *real_group_name = NULL;
 	GtkTreeIter *iter = NULL;
 	GtkTreeIter iter_new;
+	GtkTreePath *treepath = NULL;
+	GtkTreeView *treeview = NULL;
 
 	real_group_name = gnomegadu_userlist_get_group_name (group);
 
@@ -628,6 +642,16 @@ gnomegadu_userlist_find_or_create_group (GtkTreeStore * treestore, gchar * group
 	gtk_tree_store_append (treestore, &iter_new, NULL);
 	gtk_tree_store_set (treestore, &iter_new, UI_CONTACTS_COLUMN_DISPLAYED, g_strdup (real_group_name), -1);	//TODO g_strdup ???
 	gtk_tree_store_set (treestore, &iter_new, UI_CONTACTS_COLUMN_IS_GROUP, TRUE, -1);	//TODO g_strdup ???
+
+	treeview = GTK_TREE_VIEW (glade_xml_get_widget (gladexml, "ContactsTreeView"));
+	if (gtk_tree_view_get_model (treeview)) {
+		treepath = gtk_tree_model_get_path (GTK_TREE_MODEL (treestore), &iter_new);
+		gchar *path = gtk_tree_path_to_string (treepath);
+		g_print ("%s\n", path);
+		gtk_tree_view_expand_to_path (treeview, treepath);
+		//gtk_tree_view_expand_row(treeview,treepath,FALSE);
+		gtk_tree_path_free (treepath);
+	}
 
 	g_free (real_group_name);
 }
