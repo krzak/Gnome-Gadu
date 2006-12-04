@@ -26,8 +26,6 @@ gnomegadu_SOURCES = main.c \
 		    gnomegadu_protocol.h \
 		    gnomegadu_ui_notify.c \
 		    gnomegadu_ui_notify.h \
-		    eggtrayicon.c \
-		    eggtrayicon.h \
 		    gnomegadu_tray.c \
 		    gnomegadu_tray.h \
 		    gnomegadu_ui_chat.c \

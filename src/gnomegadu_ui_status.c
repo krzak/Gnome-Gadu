@@ -87,10 +87,10 @@ on_StatusComboBox_changed (GtkComboBox * widget, gpointer user_data)
 		if (status == GNOMEGADU_STATUS_UNAVAIL && !dont_change_status)
 			gnomegadu_gadugadu_disconnect ();
 
-		if (tray_image && status != GNOMEGADU_STATUS_DESC)
+		if (status_icon && gtk_status_icon_is_embedded(status_icon) && (status != GNOMEGADU_STATUS_DESC))
 		{
 			pix = create_pixbuf (gnomegadu_ui_status_get_icon_name (status));
-			gtk_image_set_from_pixbuf (GTK_IMAGE (tray_image), pix);
+			gtk_status_icon_set_from_pixbuf (status_icon, pix);
 			g_object_unref (pix);
 		}
 		

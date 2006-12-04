@@ -3,6 +3,8 @@
 	* Disable popup on group items
 	* Expand groups on startup
 	* Expand group when used
+	* Move from eggtrayicon to GtkStatusIcon
+	* GTK 2.10 is required
 
 2006-12-03  krzak  <krzak@hakore.com>
 

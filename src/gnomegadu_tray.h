@@ -3,11 +3,7 @@
 
 #include <glade/glade.h>
 
-#include "eggtrayicon.h"
-
-
-EggTrayIcon *tray_icon;
-GtkWidget *tray_image;
+GtkStatusIcon *status_icon;
 GladeXML *gladexml_tray_menu;
 
 void gnomegadu_tray_init ();

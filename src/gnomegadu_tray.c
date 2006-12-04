@@ -6,7 +6,6 @@
 #include <glade/glade.h>
 
 #include "config.h"
-#include "eggtrayicon.h"
 #include "gnomegadu_conf.h"
 #include "gnomegadu_tray.h"
 #include "gnomegadu_ui.h"
@@ -32,45 +31,24 @@ gnomegadu_tray_show_hide_main_window ()
 	}
 }
 
-gboolean
-tray_button_press_cb (GtkWidget * widget, GdkEventButton * event, gpointer user_data)
-{
-	if (event->type == GDK_BUTTON_PRESS && event->button == 1)
-	{
-		gnomegadu_tray_show_hide_main_window();
-	}
-
-	if (event->type == GDK_BUTTON_PRESS && (event->button == 2 || event->button == 3))
-	{
-		GtkWidget *main_window = glade_xml_get_widget (gladexml, "MainWindow");
-		GtkMenu *menu = GTK_MENU (glade_xml_get_widget (gladexml_tray_menu, "TrayPopupMenu"));
-		GtkWidget *show_check_item = glade_xml_get_widget (gladexml_tray_menu, "popup_show_main_window");
-		gboolean unvisible;
-		
-		g_assert(main_window);
-		g_assert (menu);
-
-		unvisible = (gboolean) g_object_get_data (G_OBJECT (main_window), "unvisible");
-		
-		g_object_set_data(G_OBJECT(show_check_item),"just_update",(gpointer)TRUE);
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_check_item),!unvisible);
-		g_object_set_data(G_OBJECT(show_check_item),"just_update",(gpointer)FALSE);
-		
-		gtk_menu_popup (menu, NULL, NULL, NULL, NULL, event->button, event->time);
-	}
-
-	return FALSE;
+void on_StatusIcon_activate(GtkStatusIcon *status_icon, gpointer user_data) {
+	gnomegadu_tray_show_hide_main_window();
 }
 
-gboolean
-tray_destroy_cb (GtkWidget * widget, gpointer user_data)
-{
-	gtk_widget_destroy (GTK_WIDGET (tray_icon));
-	tray_icon = NULL;
-	tray_image = NULL;
-	return TRUE;
+void on_StatusIcon_popupmenu(GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data) {
+	GtkWidget *main_window = glade_xml_get_widget (gladexml, "MainWindow");
+	GtkMenu *menu = GTK_MENU (glade_xml_get_widget (gladexml_tray_menu, "TrayPopupMenu"));
+	GtkWidget *show_check_item = glade_xml_get_widget (gladexml_tray_menu, "popup_show_main_window");
+	gboolean unvisible;
+	
+	unvisible = (gboolean) g_object_get_data (G_OBJECT (main_window), "unvisible");
+	
+	g_object_set_data(G_OBJECT(show_check_item),"just_update",(gpointer)TRUE);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_check_item),!unvisible);
+	g_object_set_data(G_OBJECT(show_check_item),"just_update",(gpointer)FALSE);
+	
+	gtk_menu_popup (menu, NULL, NULL, NULL, NULL, button, activate_time);
 }
-
 
 void
 on_tray_available_activate (GtkWidget * widget, gpointer user_data)
@@ -109,31 +87,18 @@ on_popup_quit_activate (GtkWidget * widget, gpointer user_data)
 void
 gnomegadu_tray_init ()
 {
-	GtkWidget *tray_event_box;
 	GdkPixbuf *pix = NULL;
 
-	tray_image = gtk_image_new ();
-
-	tray_icon = egg_tray_icon_new ("Gnome-Gadu");
-	tray_event_box = gtk_event_box_new ();
-
 	pix = create_pixbuf (USER_NOTAVAIL_ICON);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (tray_image), pix);
+	status_icon = gtk_status_icon_new_from_pixbuf(pix);
 	g_object_unref (pix);
+	
+	if (!gtk_status_icon_is_embedded)
+	    g_printerr("There is no 'Notification Area'");
 
-	gtk_container_add (GTK_CONTAINER (tray_event_box), tray_image);
-
-	gtk_widget_show (tray_event_box);
-	gtk_widget_show (tray_image);
-
-	gtk_container_add (GTK_CONTAINER (tray_icon), tray_event_box);
-	gtk_widget_show_all (GTK_WIDGET (tray_icon));
-
-	gtk_widget_add_events (GTK_WIDGET (tray_icon), GDK_BUTTON_PRESS_MASK);
-	g_signal_connect (tray_icon, "destroy", G_CALLBACK (tray_destroy_cb), tray_event_box);
-
-	g_signal_connect (tray_icon, "button_press_event", G_CALLBACK (tray_button_press_cb), NULL);
-
+	g_signal_connect(G_OBJECT(status_icon), "popup-menu", G_CALLBACK(on_StatusIcon_popupmenu), NULL);
+	g_signal_connect(G_OBJECT(status_icon), "activate", G_CALLBACK(on_StatusIcon_activate), NULL);
+	
 	gladexml_tray_menu = glade_xml_new (PACKAGE_DATA_DIR "/gnomegadu.glade", "TrayPopupMenu", NULL);
 	glade_xml_signal_autoconnect (gladexml_tray_menu);
 }

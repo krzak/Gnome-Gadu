@@ -30,7 +30,8 @@ gboolean gnomegadu_ui_notify_show(gchar *title, gchar *txt, GdkPixbuf *pix)
 			return FALSE;
 		}
 		
-		notification = notify_notification_new (title, txt, NULL,tray_icon);
+		notification = notify_notification_new (title, txt, NULL, NULL);
+		notify_notification_attach_to_status_icon (notification, status_icon);
 		notify_notification_set_icon_from_pixbuf(notification,pix);		
 		notify_notification_set_urgency (notification, NOTIFY_URGENCY_LOW);
 		notify_notification_set_timeout(notification,4000);
