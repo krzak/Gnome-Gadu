@@ -5,6 +5,7 @@
 	* Expand group when used
 	* Move from eggtrayicon to GtkStatusIcon
 	* GTK 2.10 is required
+	* Status icon blinking sometimes
 
 2006-12-03  krzak  <krzak@hakore.com>
 

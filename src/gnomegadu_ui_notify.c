@@ -31,12 +31,12 @@ gboolean gnomegadu_ui_notify_show(gchar *title, gchar *txt, GdkPixbuf *pix)
 		}
 		
 		notification = notify_notification_new (title, txt, NULL, NULL);
-		notify_notification_attach_to_status_icon (notification, status_icon);
-		notify_notification_set_icon_from_pixbuf(notification,pix);		
 		notify_notification_set_urgency (notification, NOTIFY_URGENCY_LOW);
-		notify_notification_set_timeout(notification,4000);
-	
+		notify_notification_set_timeout(notification,3000);
+		notify_notification_set_icon_from_pixbuf(notification,pix);		
 		g_signal_connect (notification, "closed", G_CALLBACK(gnomegadu_ui_notify_closed_cb), NULL);
+	
+		notify_notification_attach_to_status_icon (notification, status_icon);
 	
 		return notify_notification_show (notification, NULL);
 }

@@ -181,6 +181,8 @@ gnomegadu_protocol_loop (GIOChannel * source, GIOCondition condition, gpointer d
 		notify_txt = g_strdup_printf("Status: %s\n<span size=\"smaller\" style=\"italic\">%s</span>",gnomegadu_protocol_status_txt(new_status),descr_utf ? descr_utf : "");
 		gnomegadu_ui_notify_show (display, notify_txt, pix);
 		g_object_unref (pix);
+		
+		gnomegadu_tray_blinking(2000);
 
 		g_free (notify_txt);
 		g_free (display);
