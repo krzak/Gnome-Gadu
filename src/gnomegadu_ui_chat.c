@@ -8,6 +8,8 @@
 #include <gtkhtml/gtkhtml.h>
 
 #include "config.h"
+
+#include "gnomegadu_stock.h"
 #include "gnomegadu_ui_chat.h"
 #include "gnomegadu_conf.h"
 #include "gnomegadu_ui.h"
@@ -199,7 +201,7 @@ gnomegadu_ui_chat_window_configure (GladeXML * chat_window_xml, GList * uin_list
 
 		status = gnomegadu_userlist_get_model_status (uuid);
 		icon_name = gnomegadu_ui_status_get_icon_name (status);
-		pix = create_pixbuf (icon_name);
+		pix = gnomegadu_stock_get_pixbuf (icon_name);
 
 		gtk_list_store_append (chat_list_store, &iter);
 		gtk_list_store_set (chat_list_store, &iter, UI_CHAT_COLUMN_ICON, pix, -1);
@@ -263,7 +265,7 @@ gnomegadu_ui_chats_userlist_cleanup_model_status ()
 			GdkPixbuf *pix;
 
 			icon_name = gnomegadu_ui_status_get_icon_name (GNOMEGADU_STATUS_UNAVAIL);
-			pix = create_pixbuf (icon_name);
+			pix = gnomegadu_stock_get_pixbuf (icon_name);
 			gtk_list_store_set (chat_list_store, &iter, UI_CHAT_COLUMN_ICON, pix, -1);
 			g_object_unref (G_OBJECT (pix));
 
@@ -317,7 +319,7 @@ gnomegadu_ui_chats_set_status (gchar * uin_str, GnomeGaduProtocolStatus new_stat
 
 				status = gnomegadu_userlist_get_model_status (uuid);
 				icon_name = gnomegadu_ui_status_get_icon_name (status);
-				pix = create_pixbuf (icon_name);
+				pix = gnomegadu_stock_get_pixbuf (icon_name);
 
 				gtk_list_store_set (chat_list_store, &iter, UI_CHAT_COLUMN_ICON, pix, -1);
 				g_object_unref (G_OBJECT (pix));

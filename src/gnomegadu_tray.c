@@ -6,6 +6,8 @@
 #include <glade/glade.h>
 
 #include "config.h"
+
+#include "gnomegadu_stock.h"
 #include "gnomegadu_conf.h"
 #include "gnomegadu_tray.h"
 #include "gnomegadu_ui.h"
@@ -91,11 +93,11 @@ gnomegadu_tray_init ()
 {
 	GdkPixbuf *pix = NULL;
 
-	pix = create_pixbuf (USER_NOTAVAIL_ICON);
+	pix = gnomegadu_stock_get_pixbuf ("gnomegadu-user-not-available");
 	status_icon = gtk_status_icon_new_from_pixbuf (pix);
 	g_object_unref (pix);
 
-	if (!gtk_status_icon_is_embedded)
+	if (!gtk_status_icon_is_embedded(status_icon))
 		g_printerr ("There is no 'Notification Area'");
 
 	g_signal_connect (G_OBJECT (status_icon), "popup-menu", G_CALLBACK (on_StatusIcon_popupmenu), NULL);

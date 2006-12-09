@@ -177,7 +177,7 @@ gnomegadu_protocol_loop (GIOChannel * source, GIOCondition condition, gpointer d
 		uuid = gnomegadu_conf_contact_get_uuid_for_uin(uin_str);
 		display = gnomegadu_conf_contact_get_display_for_uuid(uuid);
 
-		pix = create_pixbuf (gnomegadu_ui_status_get_icon_name (new_status));
+		pix = gnomegadu_stock_get_pixbuf (gnomegadu_ui_status_get_icon_name (new_status));
 		notify_txt = g_strdup_printf("Status: %s\n<span size=\"smaller\" style=\"italic\">%s</span>",gnomegadu_protocol_status_txt(new_status),descr_utf ? descr_utf : "");
 		gnomegadu_ui_notify_show (display, notify_txt, pix);
 		g_object_unref (pix);

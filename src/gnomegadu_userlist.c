@@ -5,6 +5,8 @@
 #include <glade/glade.h>
 
 #include "config.h"
+
+#include "gnomegadu_stock.h"
 #include "gnomegadu_conf.h"
 #include "gnomegadu_ui.h"
 #include "gnomegadu_ui_chat.h"
@@ -32,6 +34,7 @@ gconf_client_contacts_value_changed_cb (GConfClient * client, guint cnxn_id, GCo
 	gboolean valid, valid_group;
 	gchar *key = entry->key;
 	GConfValue *value = entry->value;
+	gchar *value_string = gconf_value_get_string (value);
 	gchar *base_dir = NULL;
 	gchar *tmp = NULL;
 	gint pos;
@@ -93,7 +96,7 @@ gconf_client_contacts_value_changed_cb (GConfClient * client, guint cnxn_id, GCo
 			iter_parent = gnomegadu_userlist_group_find_iter (contacts_tree_store, group);
 			gtk_tree_store_append (contacts_tree_store, &iter, iter_parent);
 
-			pix = create_pixbuf (USER_NOTAVAIL_ICON);
+			pix = gnomegadu_stock_get_pixbuf ("gnomegadu-user-not-available");
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_UUID, value_uuid, -1);	//TODO g_strdup ???
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_ICON, pix, -1);	//TODO g_strdup ???
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_STATUS, GNOMEGADU_STATUS_UNAVAIL, -1);	//TODO g_strdup ??
@@ -117,10 +120,10 @@ gconf_client_contacts_value_changed_cb (GConfClient * client, guint cnxn_id, GCo
 
 				if (status_descr) {
 					displayed = g_markup_printf_escaped (DISPLAYED_MARKUP,
-									     gconf_value_get_string (value), status_descr);
+									     value_string, status_descr);
 
 				} else {
-					displayed = g_markup_printf_escaped ("%s", gconf_value_get_string (value));
+					displayed = g_markup_printf_escaped ("%s", value_string);
 
 				}
 
@@ -137,9 +140,9 @@ gconf_client_contacts_value_changed_cb (GConfClient * client, guint cnxn_id, GCo
 				/* tutaj troche za duzo sie dzieje */
 				//add to new place
 				gnomegadu_userlist_find_or_create_group (contacts_tree_store,
-									 gconf_value_get_string (value));
+									 value_string);
 				new_group_iter =
-				    gnomegadu_userlist_group_find_iter (contacts_tree_store, gconf_value_get_string (value));
+				    gnomegadu_userlist_group_find_iter (contacts_tree_store, value_string);
 
 				if (new_group_iter) {
 					/* create new one copying from old one */
@@ -399,7 +402,7 @@ gnomegadu_userlist_set_model_status (gchar * uin_str, GnomeGaduProtocolStatus ne
 		gtk_tree_model_get (GTK_TREE_MODEL (contacts_tree_store), &iter, UI_CONTACTS_COLUMN_UUID, &uuid, -1);
 		name = gnomegadu_conf_contact_get_display_for_uuid (uuid);
 
-		pix = create_pixbuf (gnomegadu_ui_status_get_icon_name (new_status));
+		pix = gnomegadu_stock_get_pixbuf (gnomegadu_ui_status_get_icon_name (new_status));
 		gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_ICON, pix, -1);	//TODO g_strdup ???                     
 		gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_STATUS, new_status, -1);	//TODO g_strdup ???                     
 		gdk_pixbuf_unref (pix);
@@ -478,7 +481,7 @@ gnomegadu_userlist_cleanup_model_status ()
 			gtk_tree_model_get (GTK_TREE_MODEL (contacts_tree_store), &iter, UI_CONTACTS_COLUMN_UUID, &uuid, -1);	//TODO g_strdup ???                     
 			name = gnomegadu_conf_contact_get_display_for_uuid (uuid);
 
-			pix = create_pixbuf (USER_NOTAVAIL_ICON);
+			pix = gnomegadu_stock_get_pixbuf ("gnomegadu-user-not-available");
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_ICON, pix, -1);	//TODO g_strdup ???                     
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_STATUS, GNOMEGADU_STATUS_UNAVAIL, -1);	//TODO g_strdup ???                     
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_STATUS_DESCR, NULL, -1);	//TODO g_strdup ???                     

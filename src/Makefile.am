@@ -34,6 +34,8 @@ gnomegadu_SOURCES = main.c \
 		    gnomegadu_history.h \
 		    gnomegadu_galago.c  \
 		    gnomegadu_galago.h  \
+		    gnomegadu_stock.h \
+		    gnomegadu_stock.c \
 		    gossip-cell-renderer-expander.c \
 		    gossip-cell-renderer-expander.h
 

@@ -5,6 +5,8 @@
 #include <libgadu.h>
 
 #include "config.h"
+
+#include "gnomegadu_stock.h"
 #include "gnomegadu_ui.h"
 #include "gnomegadu_conf.h"
 #include "gnomegadu_userlist.h"
@@ -80,7 +82,6 @@ on_StatusComboBox_changed (GtkComboBox * widget, gpointer user_data)
 			{
 				//TODO sprawdzic czy sie udalo zmienic status
 				gnomegadu_protocol_change_status(status,active_descr);
-				
 			}
 		}
 
@@ -89,9 +90,10 @@ on_StatusComboBox_changed (GtkComboBox * widget, gpointer user_data)
 
 		if (status_icon && gtk_status_icon_is_embedded(status_icon) && (status != GNOMEGADU_STATUS_DESC))
 		{
-			pix = create_pixbuf (gnomegadu_ui_status_get_icon_name (status));
-			gtk_status_icon_set_from_pixbuf (status_icon, pix);
-			g_object_unref (pix);
+//			pix = gnomegadu_stock_get_pixbuf (gnomegadu_ui_status_get_icon_name (status));
+//			gtk_status_icon_set_from_pixbuf (status_icon, pix);
+//			g_object_unref (pix);
+			gtk_status_icon_set_from_stock (status_icon, gnomegadu_ui_status_get_icon_name (status));
 		}
 		
 		active_status_combo = gtk_combo_box_get_active(combobox);
@@ -103,19 +105,19 @@ on_StatusComboBox_changed (GtkComboBox * widget, gpointer user_data)
 const gchar *
 gnomegadu_ui_status_get_icon_name (GnomeGaduProtocolStatus status)
 {
-	gchar *icon_type = USER_NOTAVAIL_ICON;
+	gchar *icon_type = "gnomegadu-user-not-available";
 
 	if (status == GNOMEGADU_STATUS_AVAIL)
-		icon_type = USER_AVAIL_ICON;
+		icon_type = "gnomegadu-user-available";
 
 	if (status == GNOMEGADU_STATUS_BUSY)
-		icon_type = USER_AWAY_ICON;
+		icon_type = "gnomegadu-user-away";
 
 	if (status == GNOMEGADU_STATUS_UNAVAIL)
-		icon_type = USER_NOTAVAIL_ICON;
+		icon_type = "gnomegadu-user-not-available";
 
 	if (status == GNOMEGADU_STATUS_INVISIBLE)
-		icon_type = USER_INVISIBLE_ICON;
+		icon_type = "gnomegadu-user-invisible";
 
 	return icon_type;
 }

@@ -44,7 +44,7 @@
 	      <child internal-child="image">
 		<widget class="GtkImage" id="image966">
 		  <property name="visible">True</property>
-		  <property name="pixbuf">group.png</property>
+		  <property name="stock">gnomegadu-group</property>
 		  <property name="xalign">0.5</property>
 		  <property name="yalign">0.5</property>
 		  <property name="xpad">0</property>

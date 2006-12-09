@@ -1,3 +1,4 @@
+#include "config.h"
 #include <string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -5,7 +6,7 @@
 #include <glade/glade.h>
 #include <libgnomeui/libgnomeui.h>
 
-#include "config.h"
+#include "gnomegadu_stock.h"
 #include "gnomegadu_ui.h"
 #include "gnomegadu_conf.h"
 #include "gnomegadu_ui_account_chooser.h"
@@ -23,17 +24,9 @@ on_ContactsTreeView_button_press_event (GtkTreeView * treeview, GdkEventButton *
 	GtkTreePath *path = NULL;
 	GtkTreeViewColumn *column = NULL;
 	GtkMenu *menu = NULL;
-	GtkTreeSelection *selection = NULL;
 	gint cell_x, cell_y;
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
-		selection = gtk_tree_view_get_selection (treeview);
-		
-		if (gtk_tree_selection_count_selected_rows (selection) <= 0)
-		    return FALSE;
-		
-		menu = GTK_MENU (glade_xml_get_widget (gladexml_menu, "ContactsPopupMenu"));
-
 		if (gtk_tree_view_get_path_at_pos (treeview, event->x, event->y, &path, &column, &cell_x, &cell_y)) {
 			GtkTreeModel *model;
 			GtkTreeIter iter;
@@ -43,8 +36,10 @@ on_ContactsTreeView_button_press_event (GtkTreeView * treeview, GdkEventButton *
 			if (gtk_tree_model_get_iter (model, &iter, path)) {
 				gtk_tree_model_get (model, &iter, UI_CONTACTS_COLUMN_IS_GROUP, &is_group, -1);
 
-				if (!is_group)
+				if (!is_group) {
+					menu = GTK_MENU (glade_xml_get_widget (gladexml_menu, "ContactsPopupMenu"));
 					gtk_menu_popup (menu, NULL, NULL, NULL, NULL, event->button, event->time);
+				}
 			}
 		}
 		if (path)
@@ -241,7 +236,8 @@ gnomegadu_contact_list_expander_cell_data_func (GtkTreeViewColumn * column,
 
 static
 gboolean gnomegadu_ui_contacts_selection_cb (GtkTreeSelection * selection,
-				 GtkTreeModel * model, GtkTreePath * path_arg, gboolean path_currently_selected, gpointer data)
+				    GtkTreeModel * model, GtkTreePath * path_arg, gboolean path_currently_selected,
+				    gpointer data)
 {
 	GtkTreeIter iter;
 	gboolean is_group;
@@ -254,7 +250,7 @@ gboolean gnomegadu_ui_contacts_selection_cb (GtkTreeSelection * selection,
 
 
 static void
-gnomegadu_ui_set_sensitive_menu (GtkTreeSelection *selection)
+gnomegadu_ui_set_sensitive_menu (GtkTreeSelection * selection)
 {
 	gint count;
 	GtkWidget *menu_contact_edit = glade_xml_get_widget (gladexml, "ContactEdit");
@@ -262,7 +258,7 @@ gnomegadu_ui_set_sensitive_menu (GtkTreeSelection *selection)
 	GtkWidget *menu_contact_chat = glade_xml_get_widget (gladexml, "ContactStartChat");
 
 	count = gtk_tree_selection_count_selected_rows (selection);
-	
+
 	if (count > 0) {
 		gtk_widget_set_sensitive (menu_contact_edit, TRUE);
 		gtk_widget_set_sensitive (menu_contact_delete, TRUE);
@@ -275,9 +271,9 @@ gnomegadu_ui_set_sensitive_menu (GtkTreeSelection *selection)
 }
 
 static gboolean
-gnomegadu_ui_selected_changed_cb (GtkTreeSelection *selection, gpointer user_data)
+gnomegadu_ui_selected_changed_cb (GtkTreeSelection * selection, gpointer user_data)
 {
-	gnomegadu_ui_set_sensitive_menu(selection);
+	gnomegadu_ui_set_sensitive_menu (selection);
 	return TRUE;
 }
 
@@ -327,7 +323,7 @@ gnomegadu_ui_init_contacts_treeview ()
 	/* set selection */
 	GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (contacts_tree_view));
 	gtk_tree_selection_set_select_function (selection, gnomegadu_ui_contacts_selection_cb, NULL, NULL);
-	g_signal_connect(G_OBJECT(selection),"changed", (GCallback) gnomegadu_ui_selected_changed_cb, NULL);
+	g_signal_connect (G_OBJECT (selection), "changed", (GCallback) gnomegadu_ui_selected_changed_cb, NULL);
 }
 
 
@@ -336,6 +332,9 @@ gnomegadu_ui_init ()
 {
 	GSList *accounts;
 	gchar *default_account;
+	
+	gnomegadu_stock_icons_init();
+	
 	gladexml = glade_xml_new (PACKAGE_DATA_DIR "/gnomegadu.glade", "MainWindow", NULL);
 	glade_xml_signal_autoconnect (gladexml);
 
@@ -380,6 +379,7 @@ on_MainMenuQuit_activate (GtkWidget * widget, gpointer user_data)
 	gtk_main_quit ();
 }
 
+/*
 GdkPixbuf *
 create_pixbuf (const gchar * filename)
 {
@@ -389,7 +389,6 @@ create_pixbuf (const gchar * filename)
 	if (!filename || !filename[0])
 		return NULL;
 
-	/* We first try any pixmaps directories set by the application. */
 	found_filename = g_strconcat (PACKAGE_DATA_DIR, "/", filename, NULL);
 	if (!g_file_test (found_filename, G_FILE_TEST_IS_REGULAR)) {
 		g_print ("Couldn't find pixmap file: /%s\n", found_filename);
@@ -401,6 +400,7 @@ create_pixbuf (const gchar * filename)
 
 	return pixbuf;
 }
+*/
 
 gint
 gnomegadu_ui_tree_sort (GtkTreeModel * model, GtkTreeIter * a, GtkTreeIter * b, gpointer user_data)
@@ -506,7 +506,8 @@ gnomegedu_ui_init_userlist ()
 
 			gtk_tree_store_append (contacts_tree_store, &iter, iter_parent);
 
-			pix = create_pixbuf (USER_NOTAVAIL_ICON);
+//			pix = create_pixbuf (USER_NOTAVAIL_ICON);
+			pix = gnomegadu_stock_get_pixbuf("gnomegadu-user-not-available");
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_ICON, pix, -1);	//TODO g_strdup ???                     
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_DISPLAYED, display, -1);	//TODO g_strdup ???                     
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_UUID, uuid, -1);	//TODO g_strdup ???                     
@@ -565,25 +566,25 @@ gnomegadu_ui_init_statusbar ()
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), render_text, TRUE);
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox), render_text, "markup", UI_STATUS_COLUMN_NAME, NULL);
 
-	pixbuf = create_pixbuf (USER_AVAIL_ICON);
+	pixbuf = gnomegadu_stock_get_pixbuf ("gnomegadu-user-available");
 	gtk_list_store_append (status_store, &iter);
 	gtk_list_store_set (status_store, &iter, UI_STATUS_COLUMN_ICON, pixbuf, UI_STATUS_COLUMN_NAME, "Dostępny",
 			    UI_STATUS_COLUMN_STATUS, GNOMEGADU_STATUS_AVAIL, -1);
 	gdk_pixbuf_unref (pixbuf);
 
-	pixbuf = create_pixbuf (USER_AWAY_ICON);
+	pixbuf = gnomegadu_stock_get_pixbuf ("gnomegadu-user-away");
 	gtk_list_store_append (status_store, &iter);
 	gtk_list_store_set (status_store, &iter, UI_STATUS_COLUMN_ICON, pixbuf, UI_STATUS_COLUMN_NAME, "Zajęty",
 			    UI_STATUS_COLUMN_STATUS, GNOMEGADU_STATUS_BUSY, -1);
 	gdk_pixbuf_unref (pixbuf);
 
-	pixbuf = create_pixbuf (USER_INVISIBLE_ICON);
+	pixbuf = gnomegadu_stock_get_pixbuf ("gnomegadu-user-invisible");
 	gtk_list_store_append (status_store, &iter);
 	gtk_list_store_set (status_store, &iter, UI_STATUS_COLUMN_ICON, pixbuf, UI_STATUS_COLUMN_NAME, "Niewidoczny",
 			    UI_STATUS_COLUMN_STATUS, GNOMEGADU_STATUS_INVISIBLE, -1);
 	gdk_pixbuf_unref (pixbuf);
 
-	pixbuf = create_pixbuf (USER_NOTAVAIL_ICON);
+	pixbuf = gnomegadu_stock_get_pixbuf ("gnomegadu-user-not-available");
 	gtk_list_store_append (status_store, &iter_init);
 	gtk_list_store_set (status_store, &iter_init, UI_STATUS_COLUMN_ICON, pixbuf, UI_STATUS_COLUMN_NAME, "Niedostępny",
 			    UI_STATUS_COLUMN_STATUS, GNOMEGADU_STATUS_UNAVAIL, -1);
@@ -592,7 +593,7 @@ gnomegadu_ui_init_statusbar ()
 	gtk_list_store_append (status_store, &iter);
 	gtk_list_store_set (status_store, &iter, UI_STATUS_COLUMN_STATUS, GNOMEGADU_STATUS_UNKNOWN, -1);
 
-	pixbuf = create_pixbuf (ADD_DESCRIPTION_ICON);
+	pixbuf = gnomegadu_stock_get_pixbuf ("gnomegadu-description");
 	gtk_list_store_append (status_store, &iter);
 	gtk_list_store_set (status_store, &iter, UI_STATUS_COLUMN_ICON, pixbuf, UI_STATUS_COLUMN_NAME, "Ustaw opis",
 			    UI_STATUS_COLUMN_STATUS, GNOMEGADU_STATUS_DESC, -1);

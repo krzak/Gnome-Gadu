@@ -7,12 +7,14 @@
 
 #define EMPTY_GROUP "Bez grupy"
 
+/*
 #define USER_AVAIL_ICON "user_orange.png"
 #define USER_AWAY_ICON "user_orange_away.png"
 #define USER_NOTAVAIL_ICON "user.png"
 #define USER_INVISIBLE_ICON "user_red.png"
 #define USER_GROUP_ICON "group.png"
 #define ADD_DESCRIPTION_ICON "font_add.png"
+*/
 
 #define DISPLAYED_MARKUP "%s\n<span size=\"smaller\" style=\"italic\" weight=\"ultralight\" foreground=\"#999999\">%s</span>"
 
@@ -47,7 +49,7 @@ void     on_MainMenuQuit_activate (GtkWidget * widget, gpointer user_data);
 gboolean on_AccountPreferences_activate (GtkWidget * widget, GdkEvent * event, gpointer user_data);
 void     on_AccountPreferencesCloseButton_clicked (GtkButton * button);
 
-GdkPixbuf *create_pixbuf (const gchar * filename);
+//GdkPixbuf *create_pixbuf (const gchar * filename);
 
 void gnomegedu_ui_init_userlist ();
 void gnomegadu_ui_init_contacts_treeview();
