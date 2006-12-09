@@ -175,6 +175,7 @@ gconf_client_contacts_value_changed_cb (GConfClient * client, guint cnxn_id, GCo
 				gnomegadu_userlist_clean_empty_groups (contacts_tree_store);
 			}
 		}
+
 		on_ContactsTreeView_cursor_changed (contacts_tree_view, NULL);
 
 		if (iter_contact)

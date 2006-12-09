@@ -79,6 +79,7 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="ContactEdit">
 		      <property name="visible">True</property>
+		      <property name="sensitive">False</property>
 		      <property name="label" translatable="yes">_Edytuj kontakt</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_ContactEdit_activate"/>
@@ -100,6 +101,7 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="ContactDelete">
 		      <property name="visible">True</property>
+		      <property name="sensitive">False</property>
 		      <property name="label" translatable="yes">_Usuń kontakt</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_ContactDelete_activate"/>
@@ -173,6 +175,7 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="ContactStartChat">
 		      <property name="visible">True</property>
+		      <property name="sensitive">False</property>
 		      <property name="label" translatable="yes">_Rozpocznij rozmowę</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_ContactStartChat_activate" last_modification_time="Thu, 21 Sep 2006 19:51:12 GMT"/>

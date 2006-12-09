@@ -132,7 +132,6 @@ gnomegadu_conf_del_account (gchar * account_name)
 								    attributes,
 								    &result);
 
-
 			if (keyringret) {
 				g_print ("Couldn't get UIN: %s\n", account_name);
 			} else if (g_list_length (result) == 1) {
@@ -392,22 +391,13 @@ gnomegadu_conf_get_account_password (gchar * account_name)
 	}
 
 	return ret;
-/* DEPRECATED, use keyring instead
-	gchar *root = gnomegadu_conf_find_account_path (account_name);
-	gchar *path = g_strconcat (root, "/password", NULL);
-
-	return gconf_client_get_string (gconf, path, NULL);
-
-	g_free (root);
-	g_free (path);
-*/
 }
 
+/* KEYRING SUPPORT */
 gboolean
 gnomegadu_conf_set_account_password (gchar * account_name, gchar * value_password)
 {
 	gboolean ret = FALSE;
-	/* EXPERIMENTAL KEYRING SUPPORT */
 	gchar *uin = NULL;
 	gchar *keyring = NULL;
 	GnomeKeyringAttributeList *attributes = NULL;
@@ -441,18 +431,6 @@ gnomegadu_conf_set_account_password (gchar * account_name, gchar * value_passwor
 	}
 
 	return ret;
-
-/* DEPRECATED, use keyring instead
-	gchar *root = gnomegadu_conf_find_account_path (account_name);
-	gchar *path = g_strconcat (root, "/password", NULL);
-	gboolean ret  = FALSE;
-
-	ret = gconf_client_set_string (gconf, path, g_strdup (value_password), NULL);
-	gconf_client_suggest_sync(gconf,NULL);
-
-	g_free (root);
-	g_free (path);
-*/
 }
 
 gchar *

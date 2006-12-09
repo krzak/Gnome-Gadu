@@ -23,11 +23,16 @@ on_ContactsTreeView_button_press_event (GtkTreeView * treeview, GdkEventButton *
 	GtkTreePath *path = NULL;
 	GtkTreeViewColumn *column = NULL;
 	GtkMenu *menu = NULL;
+	GtkTreeSelection *selection = NULL;
 	gint cell_x, cell_y;
 
 	if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
+		selection = gtk_tree_view_get_selection (treeview);
+		
+		if (gtk_tree_selection_count_selected_rows (selection) <= 0)
+		    return FALSE;
+		
 		menu = GTK_MENU (glade_xml_get_widget (gladexml_menu, "ContactsPopupMenu"));
-		g_assert (menu);
 
 		if (gtk_tree_view_get_path_at_pos (treeview, event->x, event->y, &path, &column, &cell_x, &cell_y)) {
 			GtkTreeModel *model;
@@ -48,7 +53,6 @@ on_ContactsTreeView_button_press_event (GtkTreeView * treeview, GdkEventButton *
 
 	return FALSE;
 }
-
 
 //używane przy aktualizacji pozycji na liscie w userlist.c
 void
@@ -128,6 +132,7 @@ on_ContactsTreeView_cursor_changed (GtkTreeView * treeview, gpointer user_data)
 
 	g_free (path);
 }
+
 
 gboolean
 on_ContactsTreeView_key_press_event (GtkWidget * widget, GdkEventKey * event, gpointer user_data)
@@ -235,17 +240,45 @@ gnomegadu_contact_list_expander_cell_data_func (GtkTreeViewColumn * column,
 }
 
 static
- gboolean
-gnomegadu_contacts_selection_cb (GtkTreeSelection * selection,
-				 GtkTreeModel * model, GtkTreePath * path, gboolean path_currently_selected, gpointer data)
+gboolean gnomegadu_ui_contacts_selection_cb (GtkTreeSelection * selection,
+				 GtkTreeModel * model, GtkTreePath * path_arg, gboolean path_currently_selected, gpointer data)
 {
 	GtkTreeIter iter;
 	gboolean is_group;
 
-	gtk_tree_model_get_iter (model, &iter, path);
+	gtk_tree_model_get_iter (model, &iter, path_arg);
 	gtk_tree_model_get (model, &iter, UI_CONTACTS_COLUMN_IS_GROUP, &is_group, -1);
 
 	return !is_group;
+}
+
+
+static void
+gnomegadu_ui_set_sensitive_menu (GtkTreeSelection *selection)
+{
+	gint count;
+	GtkWidget *menu_contact_edit = glade_xml_get_widget (gladexml, "ContactEdit");
+	GtkWidget *menu_contact_delete = glade_xml_get_widget (gladexml, "ContactDelete");
+	GtkWidget *menu_contact_chat = glade_xml_get_widget (gladexml, "ContactStartChat");
+
+	count = gtk_tree_selection_count_selected_rows (selection);
+	
+	if (count > 0) {
+		gtk_widget_set_sensitive (menu_contact_edit, TRUE);
+		gtk_widget_set_sensitive (menu_contact_delete, TRUE);
+		gtk_widget_set_sensitive (menu_contact_chat, TRUE);
+	} else {
+		gtk_widget_set_sensitive (menu_contact_edit, FALSE);
+		gtk_widget_set_sensitive (menu_contact_delete, FALSE);
+		gtk_widget_set_sensitive (menu_contact_chat, FALSE);
+	}
+}
+
+static gboolean
+gnomegadu_ui_selected_changed_cb (GtkTreeSelection *selection, gpointer user_data)
+{
+	gnomegadu_ui_set_sensitive_menu(selection);
+	return TRUE;
 }
 
 
@@ -293,7 +326,8 @@ gnomegadu_ui_init_contacts_treeview ()
 
 	/* set selection */
 	GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (contacts_tree_view));
-	gtk_tree_selection_set_select_function (selection, gnomegadu_contacts_selection_cb, NULL, NULL);
+	gtk_tree_selection_set_select_function (selection, gnomegadu_ui_contacts_selection_cb, NULL, NULL);
+	g_signal_connect(G_OBJECT(selection),"changed", (GCallback) gnomegadu_ui_selected_changed_cb, NULL);
 }
 
 
@@ -492,12 +526,10 @@ gnomegedu_ui_init_userlist ()
 		list = g_slist_next (list);
 	}
 
-
 	g_slist_foreach (list_start, gnomegadu_conf_free_list_of_string, NULL);
 	g_slist_free (list_start);
 
 	gtk_tree_view_set_model (contacts_tree_view, GTK_TREE_MODEL (contacts_tree_store));
-
 	gtk_tree_view_expand_all (contacts_tree_view);
 }
 
