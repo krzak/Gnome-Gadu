@@ -11,7 +11,12 @@ static const GtkStockItem gnomegadu_stock_items[] = {
 	{"gnomegadu-user-away", "Zajęty", 0, 0, NULL},
 	{"gnomegadu-user-invisible", "Niewidzialny", 0, 0, NULL},
 	{"gnomegadu-group", "Grupa", 0, 0, NULL},
-	{"gnomegadu-description", "Opis", 0, 0, NULL}
+	{"gnomegadu-description", "Opis", 0, 0, NULL},
+	{"gnomegadu-userlist-export", "Export", 0, 0, NULL},
+	{"gnomegadu-userlist-import", "Import", 0, 0, NULL},
+	{"gnomegadu-user-add", "Nowy kontakt", 0, 0, NULL},
+	{"gnomegadu-user-delete", "Nowy kontakt", 0, 0, NULL},
+	{"gnomegadu-user-edit", "Nowy kontakt", 0, 0, NULL}
 };
 
 

@@ -67,7 +67,8 @@
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image967">
 			  <property name="visible">True</property>
-			  <property name="pixbuf">user_add.png</property>
+			  <property name="stock">gnomegadu-user-add</property>
+			  <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
@@ -89,7 +90,8 @@
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image968">
 			  <property name="visible">True</property>
-			  <property name="pixbuf">user_edit.png</property>
+		          <property name="stock">gnomegadu-user-edit</property>
+		          <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
@@ -111,7 +113,8 @@
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image969">
 			  <property name="visible">True</property>
-			  <property name="pixbuf">user_delete.png</property>
+		          <property name="stock">gnomegadu-user-delete</property>
+		          <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
@@ -137,7 +140,8 @@
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image970">
 			  <property name="visible">True</property>
-			  <property name="pixbuf">book_next.png</property>
+			  <property name="stock">gnomegadu-userlist-export</property>
+			  <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
@@ -157,7 +161,8 @@
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image971">
 			  <property name="visible">True</property>
-			  <property name="pixbuf">book_previous.png</property>
+			  <property name="stock">gnomegadu-userlist-import</property>
+			  <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>

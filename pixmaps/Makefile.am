@@ -3,11 +3,11 @@ imagedir = $(datadir)/GnomeGadu
 image_DATA =		\
 	comments.png	\
 	gnomegadu-group.png    	\
-	user_add.png	\
-	user_delete.png	\
-	user_edit.png 	\
-	book_next.png	\
-	book_previous.png	\
+	gnomegadu-user-add.png	\
+	gnomegadu-user-delete.png	\
+	gnomegadu-user-edit.png 	\
+	gnomegadu-userlist-import.png	\
+	gnomegadu-userlist-export.png	\
 	folder_user.png	\
 	vcard_add.png	\
 	layout_edit.png \
