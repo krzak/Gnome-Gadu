@@ -20,6 +20,7 @@ image_DATA =		\
 	connect.png	\
 	vcard.png	\
 	user_big.svg	\
+	icon.png \
 	gnomegadu-description.png
 
 EXTRA_DIST = $(image_DATA)

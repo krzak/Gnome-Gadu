@@ -13,6 +13,8 @@ gnomegadu_stock_icons_init ()
 	gint i;
 
 	factory = gtk_icon_factory_new ();
+	
+	gtk_icon_size_register(GNOMEGADU_ICON_SIZE,16,16);
 
 	for (i = 0; i < (int) G_N_ELEMENTS (gnomegadu_stock_items); i++) {
 		filename = g_strconcat (gnomegadu_stock_items[i].stock_id, ".png", NULL);
@@ -21,8 +23,8 @@ gnomegadu_stock_icons_init ()
 		icon_source = gtk_icon_source_new ();
 		gtk_icon_source_set_icon_name (icon_source, gnomegadu_stock_items[i].stock_id);
 		gtk_icon_source_set_filename (icon_source, full_filename);
-		gtk_icon_source_set_size (icon_source, GTK_ICON_SIZE_MENU);
-		gtk_icon_source_set_size_wildcarded (icon_source, TRUE);
+		gtk_icon_source_set_size (icon_source, gtk_icon_size_from_name(GNOMEGADU_ICON_SIZE));
+//		gtk_icon_source_set_size_wildcarded (icon_source, FALSE);
 		
 		icon_set = gtk_icon_set_new ();
 		gtk_icon_set_add_source (icon_set, icon_source);
@@ -43,22 +45,18 @@ gnomegadu_stock_icons_init ()
 
 GdkPixbuf *gnomegadu_stock_get_pixbuf(const gchar *stock_id)
 {
-    GtkStockItem item;
-    GtkWidget  *image;
-    GdkPixbuf  *pix;
+    GdkPixbuf  *pix = NULL;
     GtkIconSet *iconset = gtk_icon_factory_lookup_default(stock_id);
-//    image = gtk_image_new_from_stock(stock_id,GTK_ICON_SIZE_MENU);
-    image = gtk_image_new_from_icon_set(iconset,GTK_ICON_SIZE_MENU);
 
-    pix = gtk_icon_set_render_icon(iconset,gtk_widget_get_default_style(),gtk_widget_get_default_direction(),GTK_STATE_NORMAL,GTK_ICON_SIZE_MENU,NULL,NULL);
-
-//    if (!gtk_stock_lookup(stock_id, &item))
-    if (!iconset)
-    {
-	g_print("nie ma '%s'\n",stock_id);
-	gtk_exit(0);
-    }
+    g_assert(iconset);
+    
+    pix = gtk_icon_set_render_icon(iconset,
+		    gtk_widget_get_default_style(),
+		    gtk_widget_get_default_direction(),
+		    GTK_STATE_NORMAL,
+		    gtk_icon_size_from_name(GNOMEGADU_ICON_SIZE),
+		    NULL,
+		    NULL);
 
     return pix;	
-//    return gtk_image_get_pixbuf(image);
 }

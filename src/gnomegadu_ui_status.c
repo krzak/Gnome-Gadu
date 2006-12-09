@@ -90,10 +90,10 @@ on_StatusComboBox_changed (GtkComboBox * widget, gpointer user_data)
 
 		if (status_icon && gtk_status_icon_is_embedded(status_icon) && (status != GNOMEGADU_STATUS_DESC))
 		{
-//			pix = gnomegadu_stock_get_pixbuf (gnomegadu_ui_status_get_icon_name (status));
-//			gtk_status_icon_set_from_pixbuf (status_icon, pix);
-//			g_object_unref (pix);
-			gtk_status_icon_set_from_stock (status_icon, gnomegadu_ui_status_get_icon_name (status));
+			pix = gnomegadu_stock_get_pixbuf (gnomegadu_ui_status_get_icon_name (status));
+			gtk_status_icon_set_from_pixbuf (status_icon, pix);
+			g_object_unref (pix);
+//			gtk_status_icon_set_from_stock (status_icon, gnomegadu_ui_status_get_icon_name (status));
 		}
 		
 		active_status_combo = gtk_combo_box_get_active(combobox);

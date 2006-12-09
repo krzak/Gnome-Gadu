@@ -3,14 +3,7 @@
 
 #include <gtk/gtk.h>
 
-/*
-#define USER_AVAIL_ICON "user_orange.png"
-#define USER_AWAY_ICON "user_orange_away.png"
-#define USER_NOTAVAIL_ICON "user.png"
-#define USER_INVISIBLE_ICON "user_red.png"
-#define USER_GROUP_ICON "group.png"
-#define ADD_DESCRIPTION_ICON "font_add.png"
-*/
+#define GNOMEGADU_ICON_SIZE "gnomegadu-icon-size"
 
 static const GtkStockItem gnomegadu_stock_items[] = {
 	{"gnomegadu-user-available", "Dostępny", 0, 0, NULL},
