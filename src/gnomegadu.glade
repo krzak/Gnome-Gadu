@@ -2280,7 +2280,7 @@ listę kontaktów:</property>
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">True</property>
-  <property name="icon">user_add.png</property>
+  <property name="icon">gnomegadu-user-add.png</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">True</property>
   <property name="skip_pager_hint">True</property>
@@ -2823,7 +2823,7 @@ listę kontaktów:</property>
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">True</property>
-  <property name="icon">user_edit.png</property>
+  <property name="icon">gnomegadu-user-edit.png</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">True</property>
   <property name="skip_pager_hint">True</property>
@@ -3398,7 +3398,8 @@ listy.</property>
       <child internal-child="image">
 	<widget class="GtkImage" id="image964">
 	  <property name="visible">True</property>
-	  <property name="pixbuf">user_edit.png</property>
+	  <property name="stock">gnomegadu-user-edit</property>
+	  <property name="icon_size">1</property>
 	  <property name="xalign">0.5</property>
 	  <property name="yalign">0.5</property>
 	  <property name="xpad">0</property>
@@ -3419,7 +3420,8 @@ listy.</property>
       <child internal-child="image">
 	<widget class="GtkImage" id="image965">
 	  <property name="visible">True</property>
-	  <property name="pixbuf">user_delete.png</property>
+	  <property name="stock">gnomegadu-user-delete</property>
+	  <property name="icon_size">1</property>
 	  <property name="xalign">0.5</property>
 	  <property name="yalign">0.5</property>
 	  <property name="xpad">0</property>

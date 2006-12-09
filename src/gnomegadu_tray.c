@@ -97,9 +97,6 @@ gnomegadu_tray_init ()
 	status_icon = gtk_status_icon_new_from_pixbuf (pix);
 	g_object_unref (pix);
 
-	if (!gtk_status_icon_is_embedded(status_icon))
-		g_printerr ("There is no 'Notification Area'");
-
 	g_signal_connect (G_OBJECT (status_icon), "popup-menu", G_CALLBACK (on_StatusIcon_popupmenu), NULL);
 	g_signal_connect (G_OBJECT (status_icon), "activate", G_CALLBACK (on_StatusIcon_activate), NULL);
 
