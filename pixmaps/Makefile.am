@@ -18,7 +18,7 @@ image_DATA =		\
 	gnomegadu-user-not-available.png \
 	user_green.png	\
 	connect.png	\
-	vcard.png	\
+	gnomegadu-vcard.png	\
 	user_big.svg	\
 	icon.png \
 	gnomegadu-description.png

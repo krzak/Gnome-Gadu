@@ -249,7 +249,8 @@
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image974">
 			  <property name="visible">True</property>
-			  <property name="pixbuf">vcard.png</property>
+		          <property name="stock">gnomegadu-vcard</property>
+		          <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
@@ -1990,7 +1991,7 @@ którego chcesz używać do łączenia się z serwerem</property>
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">True</property>
-  <property name="icon">book_previous.png</property>
+  <property name="icon">gnomegadu-userlist-import.png</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">False</property>
   <property name="skip_pager_hint">True</property>
@@ -3587,7 +3588,7 @@ listy.</property>
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">True</property>
-  <property name="icon">font_add.png</property>
+  <property name="icon">gnomegadu-description.png</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">True</property>
   <property name="skip_pager_hint">True</property>
@@ -3768,7 +3769,8 @@ listy.</property>
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image977">
 			  <property name="visible">True</property>
-			  <property name="pixbuf">vcard.png</property>
+		          <property name="stock">gnomegadu-vcard</property>
+		          <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>

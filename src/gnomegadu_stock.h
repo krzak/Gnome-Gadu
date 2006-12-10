@@ -16,7 +16,8 @@ static const GtkStockItem gnomegadu_stock_items[] = {
 	{"gnomegadu-userlist-import", "Import", 0, 0, NULL},
 	{"gnomegadu-user-add", "Nowy kontakt", 0, 0, NULL},
 	{"gnomegadu-user-delete", "Nowy kontakt", 0, 0, NULL},
-	{"gnomegadu-user-edit", "Nowy kontakt", 0, 0, NULL}
+	{"gnomegadu-user-edit", "Nowy kontakt", 0, 0, NULL},
+	{"gnomegadu-vcard", "Wizytówka", 0, 0, NULL}
 };
 
 
