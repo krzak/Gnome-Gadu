@@ -69,6 +69,14 @@ on_tray_busy_activate (GtkWidget * widget, gpointer user_data)
 }
 
 void
+on_tray_invisible_activate (GtkWidget * widget, gpointer user_data)
+{
+	GtkComboBox *combobox = GTK_COMBO_BOX (glade_xml_get_widget (gladexml, "StatusComboBox"));
+	gtk_combo_box_set_active (combobox, 2);
+}
+
+
+void
 on_tray_unavailable_activate (GtkWidget * widget, gpointer user_data)
 {
 	GtkComboBox *combobox = GTK_COMBO_BOX (glade_xml_get_widget (gladexml, "StatusComboBox"));

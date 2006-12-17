@@ -14,6 +14,8 @@ gnomegadu_SOURCES = main.c \
 		    gnomegadu_ui_register_account.h \
 		    gnomegadu_ui_import_userlist.c \
 		    gnomegadu_ui_import_userlist.h \
+		    gnomegadu_ui_export_userlist.c \
+		    gnomegadu_ui_export_userlist.h \
 		    gnomegadu_userlist.c \
 		    gnomegadu_userlist.h \
 		    gnomegadu_ui_user_add.c \

@@ -216,14 +216,15 @@ gnomegadu_ui_chat_window_configure (GladeXML * chat_window_xml, GList * uin_list
 
 	gtk_tree_view_set_model (GTK_TREE_VIEW (chat_window_tree_view), GTK_TREE_MODEL (chat_list_store));
 
-	gnome_appbar_push (GNOME_APPBAR (status_bar),
-			   g_strdup_printf ("Ilość uczestników konferencji: %d", g_list_length (uin_list)));
 
 	//just not visible
 	if (g_list_length (uin_list) <= 1) {
 		gchar *uin = g_list_nth_data (uin_list, 0);
 		gchar *uuid = gnomegadu_conf_contact_get_uuid_for_uin (uin);
 		gchar *display = gnomegadu_conf_contact_get_display_for_uuid (uuid);
+		
+		gnome_appbar_push (GNOME_APPBAR (status_bar),
+			   g_strdup_printf ("Rozmowa z %s", display));
 
 		gtk_window_set_title (GTK_WINDOW (chat_window), display);
 		g_object_set (G_OBJECT (chat_contacts_list_scrolled), "visible", FALSE, NULL);
@@ -232,6 +233,8 @@ gnomegadu_ui_chat_window_configure (GladeXML * chat_window_xml, GList * uin_list
 	} else {
 		gtk_window_set_title (GTK_WINDOW (chat_window), "Konferencja");
 		gtk_widget_show_all (chat_contacts_list_scrolled);
+		gnome_appbar_push (GNOME_APPBAR (status_bar),
+			   g_strdup_printf ("Ilość uczestników konferencji: %d", g_list_length (uin_list)));
 	}
 
 

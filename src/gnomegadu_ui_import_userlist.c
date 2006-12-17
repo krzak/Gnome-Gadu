@@ -1,16 +1,16 @@
-#include "config.h"
-#include "gnomegadu_ui.h"
-#include "gnomegadu_conf.h"
-#include "gnomegadu_ui_import_userlist.h"
-#include "gnomegadu_protocol.h"
+#include <gtk/gtk.h>
 
 #include <string.h>
 #include <uuid/uuid.h>
-#include <gtk/gtk.h>
+
 #include <glade/glade.h>
 #include <libgnomeui/libgnomeui.h>
 
-
+#include "config.h"
+#include "gnomegadu_conf.h"
+#include "gnomegadu_ui.h"
+#include "gnomegadu_protocol.h"
+#include "gnomegadu_ui_import_userlist.h"
 
 gboolean
 on_userlist_import_page_1_next (GnomeDruidPage * druidpage, GtkWidget * widget, gpointer user_data)

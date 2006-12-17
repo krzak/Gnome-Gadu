@@ -16,7 +16,7 @@ gnomegadu_stock_icons_init ()
 	
 	gtk_icon_size_register(GNOMEGADU_ICON_SIZE,16,16);
 
-	for (i = 0; i < (int) G_N_ELEMENTS (gnomegadu_stock_items); i++) {
+	for (i = 0; i < (gint) G_N_ELEMENTS (gnomegadu_stock_items); i++) {
 		full_filename = g_strconcat (PACKAGE_DATA_DIR, "/", gnomegadu_stock_items[i].stock_id, ".png", NULL);
 
 		icon_source = gtk_icon_source_new ();
