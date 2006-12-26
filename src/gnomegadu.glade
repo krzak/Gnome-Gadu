@@ -3767,10 +3767,10 @@ listy.</property>
 		<widget class="GtkMenu" id="rozmowa1_menu">
 
 		  <child>
-		    <widget class="GtkImageMenuItem" id="clear1">
+		    <widget class="GtkImageMenuItem" id="ClearMsgWindow">
 		      <property name="visible">True</property>
 		      <property name="stock_item">GNOMEUIINFO_MENU_CLEAR_ITEM</property>
-		      <signal name="activate" handler="on_clear1_activate" last_modification_time="Thu, 21 Sep 2006 21:10:25 GMT"/>
+		      <signal name="activate" handler="on_ClearMsgWindow_activate" last_modification_time="Thu, 21 Sep 2006 21:10:25 GMT"/>
 		    </widget>
 		  </child>
 

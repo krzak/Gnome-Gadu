@@ -118,6 +118,14 @@ on_CloseChat_activate (GtkWidget * widget, GdkEvent * event, gpointer user_data)
 	return TRUE;
 }
 
+gboolean
+on_ClearMsgWindow_activate (GtkWidget * widget, GdkEvent * event, gpointer user_data)
+{
+	GladeXML *chat_window_xml = glade_get_widget_tree (widget);
+	GtkWidget *html = GTK_WIDGET (g_object_get_data (G_OBJECT (chat_window_xml), "html"));
+	g_object_set_data_full (G_OBJECT (chat_window_xml), "html_str", g_strdup(""), g_free);
+	gtk_html_load_empty(GTK_HTML(html));
+}
 
 gboolean
 on_ChatWindow_delete_event (GtkWidget * widget, GdkEvent * event, gpointer user_data)
@@ -394,10 +402,10 @@ gnomegadu_ui_chat_append_text (GladeXML * chat_window_xml, const gchar * txt, Gn
 		g_free (display_sender);
 	}
 
-	old_html_str = g_object_get_data (G_OBJECT (chat_window_xml), "html_str");
+	old_html_str = g_object_get_data (G_OBJECT (chat_window_xml), "html_str"); /* do not free this ! */
 	new_html_str = g_strconcat (old_html_str, html_str, NULL);
-
 	g_object_set_data_full (G_OBJECT (chat_window_xml), "html_str", new_html_str, g_free);
+
 	gtk_html_load_from_string (GTK_HTML (html), new_html_str, g_utf8_strlen (new_html_str, -1));
 
 	//if (!gnomegadu_chat_view_is_scrolled_down(chat_window_xml))
