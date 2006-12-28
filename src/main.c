@@ -68,7 +68,9 @@ main (int argc, char **argv)
 
 	if (!notify_is_initted())
 		notify_init(PACKAGE);
-	
+
+
+	gnomegadu_protocol_is_connected	= FALSE;
 	//gnomegadu_galago_init();
 	
 	gtk_main ();

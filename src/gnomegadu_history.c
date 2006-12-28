@@ -14,8 +14,6 @@
 
 gboolean gnomegadu_history_append_received(gchar *txt)
 {
-	gchar *str_html;
-	
         return TRUE;
 }
 

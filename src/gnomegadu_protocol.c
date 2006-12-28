@@ -1,12 +1,15 @@
 #include <string.h>
+
 #include <gtk/gtk.h>
 #include <libgadu.h>
 
 #include "config.h"
 #include "gnomegadu_ui.h"
+#include "gnomegadu_stock.h"
 #include "gnomegadu_conf.h"
 #include "gnomegadu_protocol.h"
 #include "gnomegadu_userlist.h"
+#include "gnomegadu_tray.h"
 #include "gnomegadu_ui_status.h"
 #include "gnomegadu_ui_notify.h"
 #include "gnomegadu_ui_chat.h"
@@ -453,7 +456,7 @@ gnomegadu_gadugadu_from_protocol_status (gint status)
 void
 gnomegadu_protocol_add_notify (gchar * uin_str)
 {
-	if (gnomegadu_protocol_is_connected && gnomegadu_gadugadu_session && uin_str && gnomegadu_protocol_is_valid_uin (uin_str))
+	if (gnomegadu_protocol_check_connected() && gnomegadu_gadugadu_session && uin_str && gnomegadu_protocol_is_valid_uin (uin_str))
 		gg_add_notify (gnomegadu_gadugadu_session, g_ascii_strtod (uin_str, NULL));
 }
 
@@ -461,7 +464,7 @@ gnomegadu_protocol_add_notify (gchar * uin_str)
 void
 gnomegadu_protocol_remove_notify (gchar * uin_str)
 {
-	if (gnomegadu_protocol_is_connected && gnomegadu_gadugadu_session && uin_str && gnomegadu_protocol_is_valid_uin (uin_str))
+	if (gnomegadu_protocol_check_connected() && gnomegadu_gadugadu_session && uin_str && gnomegadu_protocol_is_valid_uin (uin_str))
 		gg_remove_notify (gnomegadu_gadugadu_session, g_ascii_strtod (uin_str, NULL));
 }
 
@@ -486,6 +489,9 @@ gboolean gnomegadu_protocol_send_message (gchar * uin_str, gchar *msg)
 {
     gchar *msg_windows1250 = g_convert (msg, strlen (msg), "WINDOWS-1250", "UTF-8", NULL, NULL, NULL);
 
+    if (!gnomegadu_protocol_check_connected())
+	return FALSE;
+
     if (gg_send_message(gnomegadu_gadugadu_session, GG_CLASS_CHAT, g_ascii_strtod (uin_str, NULL), msg_windows1250) == -1)
 	return FALSE;
 
@@ -503,6 +509,9 @@ gboolean gnomegadu_protocol_send_message_confer (GList *uin_list_parm, gchar *ms
     gint     i                = 0;
     
     g_assert(uin_list);
+    
+    if (!gnomegadu_protocol_check_connected())
+	return FALSE;
     
     while (uin_list)
     {
@@ -555,6 +564,9 @@ gint gnomegadu_protocol_change_status(GnomeGaduProtocolStatus status, gchar *des
     gboolean set_descr = FALSE;
     gchar *descr_windows1250 = NULL;
     gint ret = -1;
+
+    if (!gnomegadu_protocol_check_connected())
+	return FALSE;
     
     if (descr && g_utf8_strlen(descr,-1) > 0)
     {
@@ -569,4 +581,13 @@ gint gnomegadu_protocol_change_status(GnomeGaduProtocolStatus status, gchar *des
 
     g_free(descr_windows1250);
     return ret;
+}
+
+
+gboolean gnomegadu_protocol_check_connected()
+{
+    if (!gnomegadu_protocol_is_connected)
+	return FALSE;
+	
+    return TRUE;
 }

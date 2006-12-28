@@ -125,6 +125,7 @@ on_ClearMsgWindow_activate (GtkWidget * widget, GdkEvent * event, gpointer user_
 	GtkWidget *html = GTK_WIDGET (g_object_get_data (G_OBJECT (chat_window_xml), "html"));
 	g_object_set_data_full (G_OBJECT (chat_window_xml), "html_str", g_strdup(""), g_free);
 	gtk_html_load_empty(GTK_HTML(html));
+	return TRUE;
 }
 
 gboolean
@@ -420,6 +421,7 @@ gboolean
 on_ChatInputTextView_key_press_event (GtkWidget * widget, GdkEventKey * event, gpointer user_data)
 {
 	if (event->type == GDK_KEY_PRESS && (event->keyval == GDK_KP_Enter || event->keyval == GDK_Return)) {
+		gboolean is_send = FALSE;
 		gchar *text = NULL;
 		GtkTextIter iter_start, iter_end;
 		GladeXML *chat_window_xml = glade_get_widget_tree (widget);
@@ -431,10 +433,7 @@ on_ChatInputTextView_key_press_event (GtkWidget * widget, GdkEventKey * event, g
 			/* get typed text */
 			gtk_text_buffer_get_bounds (chat_input_buffer, &iter_start, &iter_end);
 
-			/* append */
 			text = gtk_text_buffer_get_slice (chat_input_buffer, &iter_start, &iter_end, FALSE);
-			gnomegadu_ui_chat_append_text (chat_window_xml, text, GNOMEGADU_CHAT_SND, NULL);
-
 			/* send */
 			GList *uin_list_window = g_object_get_data (G_OBJECT (chat_window_xml), "uin_list");
 
@@ -447,14 +446,18 @@ on_ChatInputTextView_key_press_event (GtkWidget * widget, GdkEventKey * event, g
 					uin_list = g_list_append (uin_list, g_strdup (uin_str));
 				}
 
-				gnomegadu_protocol_send_message_confer (uin_list, text);
+				is_send = gnomegadu_protocol_send_message_confer (uin_list, text);
 				g_list_foreach (uin_list, (GFunc) g_free, NULL);
 				g_list_free (uin_list);
 
 			} else {
 				gchar *uin_str = g_list_nth_data (uin_list_window, 0);
-				gnomegadu_protocol_send_message (uin_str, text);
+				is_send = gnomegadu_protocol_send_message (uin_str, text);
 			}
+
+			/* append */
+			if (is_send)
+				gnomegadu_ui_chat_append_text (chat_window_xml, text, GNOMEGADU_CHAT_SND, NULL);
 
 			g_free (text);
 		}
@@ -488,8 +491,6 @@ gnomegadu_ui_chat_find (GList * uin_list, gboolean autocreate)
 			found = FALSE;
 
 			for (k = 0; k < g_list_length (uin_list); k++) {
-//                              gchar *uin_k = gnomegadu_conf_contact_get_uin_for_uuid (g_list_nth_data (uuid_list, k));
-//                              gchar *uin_j = gnomegadu_conf_contact_get_uin_for_uuid (g_list_nth_data (uuid_list_window, j));
 				gchar *uin_k = g_list_nth_data (uin_list, k);
 				gchar *uin_j = g_list_nth_data (uin_list_window, j);
 
@@ -497,9 +498,6 @@ gnomegadu_ui_chat_find (GList * uin_list, gboolean autocreate)
 
 				if (!g_ascii_strcasecmp (uin_k, uin_j))
 					found = TRUE;
-
-				//g_free(uin_k);
-				//g_free(uin_j);
 			}
 
 			if (!found)
@@ -512,11 +510,10 @@ gnomegadu_ui_chat_find (GList * uin_list, gboolean autocreate)
 		}
 	}
 
-	if (autocreate) {
+	if (autocreate && gnomegadu_protocol_check_connected()) {
 		chat_window_xml = glade_xml_new (PACKAGE_DATA_DIR "/gnomegadu.glade", "ChatWindow", NULL);
 		/* configure window */
 		gnomegadu_ui_chat_window_configure (chat_window_xml, uin_list);
-		g_print ("new window\n");
 		return chat_window_xml;
 	}
 

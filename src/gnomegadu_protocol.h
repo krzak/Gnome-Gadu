@@ -35,4 +35,6 @@ gboolean gnomegadu_protocol_is_valid_uin (gchar * uin_str);
 gboolean gnomegadu_protocol_send_message (gchar * uin_str, gchar *msg);
 gboolean gnomegadu_protocol_send_message_confer (GList *uin_list_parm, gchar *msg);
 
+gboolean gnomegadu_protocol_check_connected();
+
 #endif

@@ -76,9 +76,9 @@ on_StatusComboBox_changed (GtkComboBox * widget, gpointer user_data)
 		
 		if ((!dont_change_status && status == GNOMEGADU_STATUS_AVAIL) || (status == GNOMEGADU_STATUS_BUSY || status == GNOMEGADU_STATUS_INVISIBLE))
 		{
-			if (!gnomegadu_protocol_is_connected)
+			if (!gnomegadu_protocol_check_connected())
 				gnomegadu_gadugadu_connect (status);
-			else if (gnomegadu_protocol_is_connected && gnomegadu_gadugadu_session)
+			else if (gnomegadu_protocol_check_connected() && gnomegadu_gadugadu_session)
 			{
 				//TODO sprawdzic czy sie udalo zmienic status
 				gnomegadu_protocol_change_status(status,active_descr);
