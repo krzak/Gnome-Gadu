@@ -1,15 +1,8 @@
-m4_define([GnomeGadu_Version],[0.0.1])
-
 AC_PREREQ(2.59)
-AC_INIT(GnomeGadu, 0.0.1, http://www.hakore.com)
-AC_COPYRIGHT([Marcin Krzyżanowski - HAKORE 2006])
-AM_INIT_AUTOMAKE([GnomeGadu],[GnomeGadu_Version])
+AC_INIT([gnome-gadu], [0.1], [http://www.hakore.com])
+AC_COPYRIGHT([Marcin Krzyżanowski - HAKORE 2006 2007])
+AM_INIT_AUTOMAKE([gnome-gadu],[0.1])
 AM_CONFIG_HEADER(config.h)
-
-AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
-AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
-AC_SUBST(PACKAGE)
-AC_SUBST(VERSION)
 
 # AM_PROG_LIBTOOL
 AM_MAINTAINER_MODE
@@ -61,7 +54,7 @@ dnl ALL_LINGUAS="pl"
 dnl -----------------------------------------------------------
 dnl Language Support
 dnl -----------------------------------------------------------
-GETTEXT_PACKAGE=GnomeGadu
+GETTEXT_PACKAGE=$PACKAGE_NAME
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Gettext package name])
 

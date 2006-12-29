@@ -19,6 +19,7 @@ main (int argc, char **argv)
 	GOptionContext *option_context;
 	GnomeProgram *gnomegadu_app;
 	gchar **remaining_args = NULL;
+	
 	GOptionEntry option_entries[] = {
 		{G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY,
 		 &remaining_args,
@@ -27,7 +28,7 @@ main (int argc, char **argv)
 	};
 
 
-		gg_debug_level = 255;
+	gg_debug_level = 255;
 
 	option_context = g_option_context_new ("gnomegadu-app");
 
@@ -36,10 +37,13 @@ main (int argc, char **argv)
 	g_option_context_add_main_entries (option_context, option_entries,
 					   NULL);
 
-	gnomegadu_app = gnome_program_init (PACKAGE, VERSION,
+	gnomegadu_app = gnome_program_init (PACKAGE_NAME, PACKAGE_VERSION,
 					    LIBGNOMEUI_MODULE, argc, argv,
 					    GNOME_PARAM_GOPTION_CONTEXT,
-					    option_context, GNOME_PARAM_NONE);
+					    option_context,
+					    GNOME_PARAM_HUMAN_READABLE_NAME,
+					    PACKAGE_NAME,
+					    GNOME_PARAM_NONE);
 
 
 

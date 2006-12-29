@@ -1,7 +1,7 @@
 # bin
-bin_PROGRAMS = gnomegadu
+bin_PROGRAMS = gnome-gadu
 
-gnomegadu_SOURCES = main.c \
+gnome_gadu_SOURCES = main.c \
 		    gnomegadu_ui.c \
 		    gnomegadu_ui.h \
 		    gnomegadu_conf.c \
@@ -41,7 +41,7 @@ gnomegadu_SOURCES = main.c \
 		    gossip-cell-renderer-expander.c \
 		    gossip-cell-renderer-expander.h
 
-gnomegadu_CFLAGS = $(CFLAGS) -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\"
+gnome_gadu_CFLAGS = $(CFLAGS) -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\"
 
 gladedir = $(pkgdatadir)
 glade_DATA = gnomegadu.glade

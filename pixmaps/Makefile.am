@@ -1,4 +1,4 @@
-imagedir = $(datadir)/GnomeGadu
+imagedir = $(datadir)/$(PACKAGE_NAME)
 
 image_DATA =		\
 	comments.png	\

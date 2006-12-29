@@ -15,7 +15,7 @@ test -z "$srcdir" && srcdir=.
 
 ORIGDIR=`pwd`
 cd $srcdir
-PROJECT="GnomeGadu"
+PROJECT="Gnome-Gadu"
 TEST_TYPE=-f
 FILE=src/main.c
 CONFIGURE=configure.in
