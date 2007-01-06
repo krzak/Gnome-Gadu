@@ -69,6 +69,9 @@
 /* Define to the full name of this package. */
 #undef PACKAGE_NAME
 
+/* Readable name */
+#undef PACKAGE_READABLE_NAME
+
 /* Define to the full name and version of this package. */
 #undef PACKAGE_STRING
 

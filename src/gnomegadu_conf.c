@@ -32,7 +32,7 @@ gnomegadu_conf_rename_account (gchar * old_name, gchar * new_name)
 
 	profile = gnomegadu_conf_get_profile ();
 	if (profile && !g_utf8_collate (old_name, profile)) {
-		gchar *path = g_strconcat (GNOMEGADU_CONF_ROOT "/profile", NULL);
+		gchar *path = g_strconcat (gnomegadu_gconf_relative_path,"/profile", NULL);
 		ret = gconf_client_set_string (gconf, path, g_strdup (new_name), NULL);
 		g_free (path);
 	}
@@ -78,7 +78,7 @@ gnomegadu_conf_add_account (gchar * name, gchar * uin, gchar * password)
 
 	name_name = name ? g_strdup (name) : g_strdup (account_name);
 
-	path = g_strconcat (GNOMEGADU_CONF_ROOT "/accounts/", account_name, "/name", NULL);
+	path = g_strconcat (gnomegadu_gconf_relative_path,"/accounts/", account_name, "/name", NULL);
 	gconf_client_set_string (gconf, path, name_name, NULL);
 	g_free (path);
 
@@ -172,7 +172,13 @@ gnomegadu_conf_del_account (gchar * account_name)
 GSList *
 gnomegadu_conf_get_accounts ()
 {
-	return gconf_client_all_dirs (gconf, GNOMEGADU_CONF_ROOT "/accounts", NULL);
+	gchar *relative_path = g_strconcat(gnomegadu_gconf_relative_path,"/accounts",NULL);
+	GSList *ret = NULL;
+	
+	ret =  gconf_client_all_dirs (gconf, relative_path, NULL);
+
+	g_free(relative_path);
+	return ret;	
 }
 
 void
@@ -312,7 +318,7 @@ gnomegadu_conf_set_profile (gchar * account_name)
 	window = GTK_WINDOW (glade_xml_get_widget (gladexml, "MainWindow"));
 	gtk_window_set_title (window, g_strdup (account_name));
 
-	path = g_strconcat (GNOMEGADU_CONF_ROOT "/profile", NULL);
+	path = g_strconcat (gnomegadu_gconf_relative_path,"/profile", NULL);
 
 	ret = gconf_client_set_string (gconf, path, g_strdup (account_name), NULL);
 	gnomegedu_ui_init_userlist ();
@@ -345,7 +351,7 @@ gchar *
 gnomegadu_conf_get_profile ()
 {
 	gchar *ret = NULL;
-	gchar *path = g_strconcat (GNOMEGADU_CONF_ROOT "/profile", NULL);
+	gchar *path = g_strconcat (gnomegadu_gconf_relative_path, "/profile", NULL);
 	ret = gconf_client_get_string (gconf, path, NULL);
 	g_free (path);
 	return ret;
@@ -439,7 +445,7 @@ gnomegadu_conf_get_default_account_name ()
 	gchar *path;
 	gchar *account_name;
 
-	path = g_strconcat (GNOMEGADU_CONF_ROOT "/default_account", NULL);
+	path = g_strconcat (gnomegadu_gconf_relative_path,"/default_account", NULL);
 	account_name = gconf_client_get_string (gconf, path, NULL);
 
 	g_free (path);
@@ -452,7 +458,7 @@ gnomegadu_conf_set_default_account_name (gchar * account_name)
 	gchar *path;
 	gboolean ret;
 
-	path = g_strconcat (GNOMEGADU_CONF_ROOT "/default_account", NULL);
+	path = g_strconcat (gnomegadu_gconf_relative_path,"/default_account", NULL);
 
 	if (!account_name)
 		ret = gconf_client_unset (gconf, path, NULL);
@@ -466,16 +472,19 @@ gnomegadu_conf_set_default_account_name (gchar * account_name)
 
 
 void
-gnomegadu_conf_init ()
+gnomegadu_conf_init (GnomeProgram *app)
 {
 	GError *error = NULL;
 	;
 	gconf = gconf_client_get_default ();
+	gnomegadu_gconf_relative_path = gnome_gconf_get_app_settings_relative(app,"");
 
-	gconf_client_add_dir (gconf, GNOMEGADU_CONF_ROOT, GCONF_CLIENT_PRELOAD_RECURSIVE, NULL);
+	g_print("%s\n",gnomegadu_gconf_relative_path);
+	
+	gconf_client_add_dir (gconf, gnomegadu_gconf_relative_path, GCONF_CLIENT_PRELOAD_RECURSIVE, NULL);
 
 	if (!gconf_client_notify_add
-	    (gconf, GNOMEGADU_CONF_ROOT "/sound", gnomegadu_conf_sound_enabled_notify, NULL, NULL, &error))
+	    (gconf, g_strconcat(gnomegadu_gconf_relative_path,"/sound",NULL), gnomegadu_conf_sound_enabled_notify, NULL, NULL, &error))
 		g_printerr ("%s\n", error->message);
 
 	gconf_client_suggest_sync (gconf, NULL);

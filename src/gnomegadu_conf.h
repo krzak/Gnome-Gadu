@@ -1,14 +1,14 @@
 #ifndef GNOME_GADU_CONF_H
 #define GNOME_GADU_CONF_H 1
 
+#include <libgnome/libgnome.h>
 #include <gconf/gconf-client.h>
 #include <gnome-keyring-1/gnome-keyring.h>
 
-#define GNOMEGADU_CONF_ROOT		"/apps/gnome-gadu"
-
 GConfClient *gconf;
+gchar *gnomegadu_gconf_relative_path;
 
-void gnomegadu_conf_init ();
+void gnomegadu_conf_init (GnomeProgram *app);
 
 gboolean  gnomegadu_conf_rename_account (gchar * old_name, gchar * new_name);
 gchar    *gnomegadu_conf_add_account (gchar * name, gchar * uin, gchar * password);

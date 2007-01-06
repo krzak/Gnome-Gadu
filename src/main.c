@@ -32,8 +32,6 @@ main (int argc, char **argv)
 
 	option_context = g_option_context_new ("gnomegadu-app");
 
-	// g_option_context_add_main_entries (option_context, option_entries,
-	// GETTEXT_PACKAGE);
 	g_option_context_add_main_entries (option_context, option_entries,
 					   NULL);
 
@@ -42,7 +40,7 @@ main (int argc, char **argv)
 					    GNOME_PARAM_GOPTION_CONTEXT,
 					    option_context,
 					    GNOME_PARAM_HUMAN_READABLE_NAME,
-					    PACKAGE_NAME,
+					    PACKAGE_READABLE_NAME,
 					    GNOME_PARAM_NONE);
 
 
@@ -63,9 +61,9 @@ main (int argc, char **argv)
 	}
 
 
-	gnomegadu_conf_init ();
+	gnomegadu_conf_init (gnomegadu_app);
 
-	if (gconf_client_get_bool (gconf, GNOMEGADU_CONF_ROOT "/sound", NULL))
+	if (gconf_client_get_bool (gconf, g_strconcat(gnomegadu_gconf_relative_path, "/sound",NULL), NULL))
 		gnome_sound_init (NULL);
 
 	gnomegadu_ui_init ();
