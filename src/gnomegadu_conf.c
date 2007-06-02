@@ -61,7 +61,7 @@ gnomegadu_conf_add_account (gchar * name, gchar * uin, gchar * password)
 							     GTK_DIALOG_DESTROY_WITH_PARENT,
 							     GTK_MESSAGE_ERROR,
 							     GTK_BUTTONS_CLOSE,
-							     "<span weight='bold' size='larger'>Primary Text</span>\n\n<span>Konto o nazwie '%s' jest już na liście</span>",
+							     "<span weight='bold' size='larger'>Primary Text</span>\n\n<span>Profil o nazwie '%s' jest już na liście</span>",
 							     name);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (GTK_WIDGET (dialog));

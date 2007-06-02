@@ -357,7 +357,7 @@ gnomegadu_ui_accounts_pref_init_list ()
 		render_text = gtk_cell_renderer_text_new ();
 		g_object_set (G_OBJECT (render_text), "editable", TRUE, NULL);
 
-		column = gtk_tree_view_column_new_with_attributes ("Nazwa konta", render_text, "markup", UI_PREF_COLUMN_ACCOUNT_NAME, NULL);
+		column = gtk_tree_view_column_new_with_attributes ("Nazwa profilu", render_text, "markup", UI_PREF_COLUMN_ACCOUNT_NAME, NULL);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (accounts_tree_view), column);
 		
 		g_signal_connect (G_OBJECT (accounts_selection), "changed", G_CALLBACK (account_changed_cb), NULL);

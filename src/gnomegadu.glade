@@ -305,7 +305,7 @@
 	      <property name="visible">True</property>
 	      <property name="headers_visible">False</property>
 	      <property name="rules_hint">False</property>
-	      <property name="reorderable">False</property>
+	      <property name="reorderable">True</property>
 	      <property name="enable_search">True</property>
 	      <property name="fixed_height_mode">False</property>
 	      <property name="hover_selection">False</property>
@@ -426,7 +426,7 @@
 
 <widget class="GtkDialog" id="AccountPreferences">
   <property name="visible">True</property>
-  <property name="title">Ustawienia kont</property>
+  <property name="title">Ustawienia profili</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_CENTER</property>
   <property name="modal">True</property>
@@ -756,7 +756,7 @@
 			      <property name="visible">True</property>
 			      <property name="sensitive">False</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">Domyślnie używaj tego konta</property>
+			      <property name="label" translatable="yes">Domyślnie używaj tego profilu</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -785,7 +785,7 @@
 	      <child>
 		<widget class="GtkLabel" id="AccountTabNameLabel">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">&lt;b&gt;Konto&lt;/b&gt;</property>
+		  <property name="label" translatable="yes">&lt;b&gt;Profil&lt;/b&gt;</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">True</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -824,7 +824,7 @@
 
 <widget class="GtkDialog" id="ChooseAccountDialog">
   <property name="visible">True</property>
-  <property name="title">Wybór konta</property>
+  <property name="title">Wybór profilu</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_CENTER</property>
   <property name="modal">True</property>
@@ -882,7 +882,7 @@
 	  <child>
 	    <widget class="GtkLabel" id="label8">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Wybierz z listy konto
+	      <property name="label" translatable="yes">Wybierz z listy profil
 z którym uruchomić Gnome-Gadu</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
@@ -1402,7 +1402,7 @@ opcję aby uzyskać nowy numer.</property>
 		  <child>
 		    <widget class="GtkLabel" id="label36">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Nazwa jest identyfikatorem który będzie używany w programie zamiast numeru Gadu-Gadu. Wpisz swoje imię lub pseudo które chcesz używać dla tego konta.
+		      <property name="label" translatable="yes">Nazwa jest identyfikatorem który będzie używany w programie zamiast numeru Gadu-Gadu. Wpisz swoje imię lub pseudo które chcesz używać dla tego profilu.
 </property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
@@ -1688,7 +1688,7 @@ Twój nowy numer Gadu-Gadu to:</property>
 	      <child>
 		<widget class="GtkLabel" id="label29">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">Aby zacząć korzystać z nowego numeru Gadu-Gadu ustaw nowe konto w programie Gnome-Gadu wpisując uzyskany numer oraz ustalone przez Ciebie hasło.</property>
+		  <property name="label" translatable="yes">Aby zacząć korzystać z nowego numeru Gadu-Gadu ustaw nowy profil w programie Gnome-Gadu wpisując uzyskany numer oraz ustalone przez Ciebie hasło.</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1740,7 +1740,7 @@ Twój nowy numer Gadu-Gadu to:</property>
 		      <property name="label" translatable="yes">Nazwa jest identyfikatorem który będzie używany
 w programie zamiast numeru Gadu-Gadu. Wpisz
 swoje imię lub pseudo które chcesz używać dla
-tego konta.</property>
+tego profilu.</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>

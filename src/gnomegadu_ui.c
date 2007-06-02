@@ -277,7 +277,6 @@ gnomegadu_ui_selected_changed_cb (GtkTreeSelection * selection, gpointer user_da
 	return TRUE;
 }
 
-
 void
 gnomegadu_ui_init_contacts_treeview ()
 {
@@ -324,6 +323,13 @@ gnomegadu_ui_init_contacts_treeview ()
 	GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (contacts_tree_view));
 	gtk_tree_selection_set_select_function (selection, gnomegadu_ui_contacts_selection_cb, NULL, NULL);
 	g_signal_connect (G_OBJECT (selection), "changed", (GCallback) gnomegadu_ui_selected_changed_cb, NULL);
+	
+	/* D&D stuff */
+	// http://hoogervorst.dyndns.org/cgi-bin/darcs.cgi/sylpheed-claws-feb-20-2005/?c=diff&p=20041228213234-38e0e-e1cec3432277e1fb893b9edcdc556431f7a34617.gz
+//	g_signal_connect(G_OBJECT(contacts_tree_view), "drag_begin",G_CALLBACK(gnomegadu_contacts_drag_begin_cb),contacts_tree_view);
+//	g_signal_connect(G_OBJECT(contacts_tree_view), "drag_end",G_CALLBACK(gnomegadu_contacts_drag_end_cb),contacts_tree_view);
+//	g_signal_connect(G_OBJECT(contacts_tree_view), "drag_drop",G_CALLBACK(gnomegadu_contacts_drag_drop_cb),contacts_tree_view);
+	
 }
 
 
@@ -379,29 +385,6 @@ on_MainMenuQuit_activate (GtkWidget * widget, gpointer user_data)
 	gtk_main_quit ();
 }
 
-/*
-GdkPixbuf *
-create_pixbuf (const gchar * filename)
-{
-	gchar *found_filename = NULL;
-	GdkPixbuf *pixbuf = NULL;
-
-	if (!filename || !filename[0])
-		return NULL;
-
-	found_filename = g_strconcat (PACKAGE_DATA_DIR, "/", filename, NULL);
-	if (!g_file_test (found_filename, G_FILE_TEST_IS_REGULAR)) {
-		g_print ("Couldn't find pixmap file: /%s\n", found_filename);
-		g_free (found_filename);
-		return NULL;
-	}
-
-	pixbuf = gdk_pixbuf_new_from_file (found_filename, NULL);
-
-	return pixbuf;
-}
-*/
-
 gint
 gnomegadu_ui_tree_sort (GtkTreeModel * model, GtkTreeIter * a, GtkTreeIter * b, gpointer user_data)
 {
@@ -426,8 +409,20 @@ gnomegadu_ui_tree_sort (GtkTreeModel * model, GtkTreeIter * a, GtkTreeIter * b, 
 
 	g_free (str_a);
 	g_free (str_b);
+	
 	return ret;
 }
+
+/*
+static 
+void gnomegadu_ui_model_row_inserted_cb(GtkTreeModel *tree_model,
+                                    GtkTreePath  *path,
+                                    GtkTreeIter  *iter,
+                                    gpointer      user_data)
+{
+    g_print("inserted\n");    
+}
+*/
 
 void
 gnomegedu_ui_init_userlist ()
@@ -440,12 +435,12 @@ gnomegedu_ui_init_userlist ()
 	gchar *path;
 	gchar *root;
 	gchar *display, *uuid, *group;
-	GdkPixbuf *pix;
 	GtkTreeSelection *selection;
 
 
 	contacts_tree_view = GTK_TREE_VIEW (glade_xml_get_widget (gladexml, "ContactsTreeView"));
 	contacts_tree_store = GTK_TREE_STORE (gtk_tree_view_get_model (contacts_tree_view));
+	/* create model HERE */
 	if (!contacts_tree_store) {
 		update = FALSE;
 		contacts_tree_store =
@@ -459,6 +454,8 @@ gnomegedu_ui_init_userlist ()
 							 NULL, NULL);
 		gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (contacts_tree_store),
 						      GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
+						      
+		//g_signal_connect (G_OBJECT (contacts_tree_store), "row-inserted", (GCallback) gnomegadu_ui_model_row_inserted_cb, NULL);
 	} else {
 		update = TRUE;
 		gtk_tree_store_clear (GTK_TREE_STORE (contacts_tree_store));
@@ -502,11 +499,11 @@ gnomegedu_ui_init_userlist ()
 		}
 
 		if (display && uuid) {
+			GdkPixbuf *pix;
 			GtkTreeIter *iter_parent = gnomegadu_userlist_group_find_iter (contacts_tree_store, group);
 
 			gtk_tree_store_append (contacts_tree_store, &iter, iter_parent);
 
-//			pix = create_pixbuf (USER_NOTAVAIL_ICON);
 			pix = gnomegadu_stock_get_pixbuf("gnomegadu-user-not-available");
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_ICON, pix, -1);	//TODO g_strdup ???                     
 			gtk_tree_store_set (contacts_tree_store, &iter, UI_CONTACTS_COLUMN_DISPLAYED, display, -1);	//TODO g_strdup ???                     
@@ -532,6 +529,8 @@ gnomegedu_ui_init_userlist ()
 
 	gtk_tree_view_set_model (contacts_tree_view, GTK_TREE_MODEL (contacts_tree_store));
 	gtk_tree_view_expand_all (contacts_tree_view);
+
+	g_object_unref(G_OBJECT(contacts_tree_store));
 }
 
 static gboolean
