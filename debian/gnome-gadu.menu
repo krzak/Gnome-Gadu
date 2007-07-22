@@ -1,0 +1,1 @@
+?package(gnome-gadu):needs="X11" section="Apps/Net" title="Gnome-Gadu" command="/usr/bin/gnome-gadu"

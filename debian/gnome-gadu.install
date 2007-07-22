@@ -1,0 +1,5 @@
+gnome-gadu.desktop /usr/share/applications
+debian/tmp/usr/bin
+debian/tmp/usr/share/gnome-gadu
+debian/tmp/usr/share/pixmaps
+debian/tmp/usr/share/locale

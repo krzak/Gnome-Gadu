@@ -1,0 +1,96 @@
+#!/usr/bin/make -f
+
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+config.status: patch configure
+	dh_testdir
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
+	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+
+build: build-stamp
+
+build-stamp: config.status
+	dh_testdir
+
+	$(MAKE)
+
+	touch build-stamp
+
+clean: clean-patched unpatch
+
+clean-patched:
+	dh_testdir
+	dh_testroot
+	-$(MAKE) distclean
+	rm -f build-stamp 
+	dh_clean config.sub config.guess
+	dh_clean 
+
+patch: patch-stamp
+patch-stamp:
+	dpatch apply-all
+	dpatch call-all -a=pkg-info > patch-stamp
+
+unpatch:
+	dpatch deapply-all
+	rm -rf patch-stamp debian/patched
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+	
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+	cp -f $(CURDIR)/debian/gnome-gadu.lintian-overrides      $(CURDIR)/debian/gnome-gadu/usr/share/lintian/overrides/gnome-gadu
+
+binary-indep: build install
+	dh_testdir -i
+	dh_testroot -i
+	dh_install -i
+	dh_link -i
+	dh_compress -i
+	dh_fixperms -i
+	dh_installdeb -i
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i
+
+binary-arch: build
+	dh_testdir -a
+	dh_testroot -a
+	dh_install -a
+	dh_installchangelogs ChangeLog -a
+	dh_installdocs -a
+	dh_installmenu -a
+	dh_link -a
+	dh_strip -a
+	dh_compress -a
+	dh_fixperms -a
+	dh_installdeb -a
+	dh_makeshlibs -a
+#	dh_shlibdeps -L gnome-gadu -l debian/gnome-gadu/usr/lib/ -a
+	dh_gencontrol -a
+	dh_md5sums -a
+	dh_builddeb -a
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install
