@@ -11,27 +11,27 @@
 
 	* gnomegadu_gconf_relative_path
 
-2006-12-28  krzak  <krzak@hakore.com>
+2006-12-28  krzak  <krzak at hakore.com>
 
 	* Don't open chat window if not connected.
 	* introduced: gnomegadu_protocol_check_connected()
 	* rename to "gnome-gadu"
 
-2006-12-26  krzak  <krzak@hakore.com>
+2006-12-26  krzak  <krzak at hakore.com>
 
 	* Clear chat window.
 
-2006-12-17  krzak  <krzak@hakore.com>
+2006-12-17  krzak  <krzak at hakore.com>
 
 	* Invisible option in systray menu.
 
-2006-12-09  krzak  <krzak@hakore.com>
+2006-12-09  krzak  <krzak at hakore.com>
 
 	* Some improvements selection and grayed-out
 	  menu items if no selection
 	* Stock icons
 
-2006-12-04  krzak  <krzak@hakore.com>
+2006-12-04  krzak  <krzak at hakore.com>
 
 	* Disable popup on group items
 	* Expand groups on startup
@@ -40,11 +40,11 @@
 	* GTK 2.10 is required
 	* Status icon blinking sometimes
 
-2006-12-03  krzak  <krzak@hakore.com>
+2006-12-03  krzak  <krzak at hakore.com>
 
 	* Groups support
 	* Remove entry from keyring after remove account
 
-2006-12-03  krzak  <krzak@hakore.com>
+2006-12-03  krzak  <krzak at hakore.com>
 
 	* Move in to SVN
