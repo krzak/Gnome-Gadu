@@ -2,14 +2,14 @@ Source: gnome-gadu
 Section: net
 Priority: optional
 Maintainer: Marcin Krzyżanowski <krzak@hakore.com>
-Build-Depends: debhelper (>= 4.0.0), libgtkspell-dev, autotools-dev, libgnutls-dev, libxt-dev, libdbus-1-dev, libdbus-glib-1-dev, libxss-dev, libxinerama-dev, dpatch, docbook-to-man
+Build-Depends: debhelper (>= 4.0.0), libgnome-dev, autotools-dev, libgnutls-dev, libdbus-1-dev, libdbus-glib-1-dev, dpatch, docbook-to-man
 Standards-Version: 3.6.1
 
 Package: gnome-gadu
 Architecture: any
 Section: net
 Depends: ${shlibs:Depends}
-Description: Gnome-Gadi Instant Messaging Client
+Description: Gnome-Gadu Instant Messaging Client
  Gnome-Gadu is GNOME based instant messenger.
  .
  Homepage: http://www.hakore.com/gnomegadu/

@@ -1,5 +1,4 @@
 imagedir = $(datadir)/$(PACKAGE_NAME)
-
 image_DATA =		\
 	comments.png	\
 	gnomegadu-group.png    	\
@@ -23,6 +22,7 @@ image_DATA =		\
 	icon.png \
 	gnomegadu-description.png
 
-EXTRA_DIST = $(image_DATA)
+icondir = $(datadir)/pixmaps
+icon_DATA = gnome-gadu.png
 
-
+EXTRA_DIST = $(image_DATA) $(icon_DATA)
